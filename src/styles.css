@@ -5,40 +5,290 @@
 html,
 body,
 #root {
+  width: 100%;
+  min-width: 320px;
   min-height: 100%;
   margin: 0;
 }
 
 body {
-  min-width: 320px;
-  background: #0a0a0a;
+  margin: 0;
+  background: #000;
   color: #fff;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-a {
-  color: inherit;
+button {
+  font: inherit;
 }
 
-.screen {
+.ios-lockscreen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #101b2b;
+  isolation: isolate;
+  user-select: none;
+}
+
+.ios-wallpaper {
+  position: absolute;
+  inset: -8%;
+  z-index: -3;
+  background:
+    radial-gradient(circle at 17% 18%, rgba(209, 235, 255, 0.95) 0 7%, rgba(148, 189, 223, 0.65) 15%, transparent 31%),
+    radial-gradient(circle at 84% 16%, rgba(228, 238, 244, 0.95) 0 8%, rgba(127, 164, 194, 0.72) 20%, transparent 37%),
+    radial-gradient(circle at 76% 72%, rgba(123, 158, 182, 0.75) 0 12%, rgba(44, 70, 93, 0.48) 28%, transparent 47%),
+    radial-gradient(circle at 10% 90%, rgba(117, 149, 169, 0.7) 0 10%, rgba(38, 62, 81, 0.6) 30%, transparent 52%),
+    linear-gradient(152deg, #85b4d2 0%, #466984 35%, #243a4f 57%, #172536 100%);
+  filter: saturate(0.8) contrast(1.02);
+  transform: scale(1.05);
+}
+
+.ios-wallpaper::before,
+.ios-wallpaper::after {
+  content: "";
+  position: absolute;
+  width: 68%;
+  aspect-ratio: 1;
+  border-radius: 44% 56% 50% 50% / 40% 42% 58% 60%;
+  border: 42px solid rgba(236, 247, 255, 0.32);
+  filter: blur(7px);
+  transform: rotate(-19deg);
+}
+
+.ios-wallpaper::before {
+  left: -14%;
+  top: 31%;
+}
+
+.ios-wallpaper::after {
+  right: -31%;
+  top: -9%;
+  border-width: 55px;
+  opacity: 0.72;
+  transform: rotate(28deg) scale(0.88);
+}
+
+.ios-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(to bottom, rgba(5, 12, 18, 0.15), rgba(5, 10, 15, 0.3)),
+    rgba(19, 31, 42, 0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ios-passcode {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: max(18px, env(safe-area-inset-top)) 22px max(22px, env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.ios-top-lock {
+  width: 22px;
+  height: 22px;
+  margin-top: 13px;
+  opacity: 0.97;
+}
+
+.ios-top-lock svg {
+  width: 100%;
+  height: 100%;
+  fill: rgba(255, 255, 255, 0.92);
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 1.5;
+}
+
+.ios-time {
+  margin-top: 13px;
+  font-size: clamp(62px, 19.5vw, 82px);
+  font-weight: 200;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.12);
+}
+
+.ios-date {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: capitalize;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.16);
+}
+
+.ios-passcode-panel {
+  width: min(100%, 342px);
+  margin-top: auto;
+  padding-top: 34px;
+}
+
+.ios-passcode-title {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+}
+
+.ios-dots {
+  display: flex;
+  justify-content: center;
+  gap: 19px;
+  height: 15px;
+  margin: 19px 0 29px;
+}
+
+.ios-dots span {
+  width: 12px;
+  height: 12px;
+  border: 1.8px solid rgba(255, 255, 255, 0.98);
+  border-radius: 50%;
+  background: transparent;
+  transition: transform 100ms ease, background 100ms ease;
+}
+
+.ios-dots span.filled {
+  background: #fff;
+  transform: scale(1.03);
+}
+
+.ios-dots.is-error {
+  animation: ios-shake 320ms ease;
+}
+
+@keyframes ios-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-11px); }
+  40% { transform: translateX(9px); }
+  60% { transform: translateX(-7px); }
+  80% { transform: translateX(4px); }
+}
+
+.ios-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 76px);
+  justify-content: center;
+  gap: 12px 19px;
+}
+
+.ios-key,
+.ios-delete {
+  width: 76px;
+  height: 76px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 3px;
+  background: rgba(255, 255, 255, 0.19);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 80ms ease, transform 80ms ease;
+}
+
+.ios-key:active {
+  background: rgba(255, 255, 255, 0.38);
+  transform: scale(0.97);
+}
+
+.ios-key span {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 31px;
+  letter-spacing: -0.03em;
+}
+
+.ios-key small {
+  min-height: 11px;
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.21em;
+  padding-left: 0.21em;
+}
+
+.ios-delete {
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+.ios-delete svg {
+  width: 31px;
+  height: 24px;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.98);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ios-key-spacer {
+  width: 76px;
+  height: 76px;
+}
+
+.ios-bottom-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding: 0 2px;
+}
+
+.ios-bottom-actions button {
+  border: 0;
+  padding: 8px 0;
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+}
+
+.ios-home-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: max(8px, env(safe-area-inset-bottom));
+  width: 134px;
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.94);
+  transform: translateX(-50%);
+}
+
+.experience-placeholder {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
+  background: #050505;
+  text-align: center;
 }
 
-.panel {
-  width: min(100%, 420px);
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(18px);
-}
-
-.eyebrow {
-  display: block;
-  margin-bottom: 10px;
+.experience-placeholder span {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -46,24 +296,42 @@ a {
   opacity: 0.55;
 }
 
-h1 {
-  margin: 0 0 12px;
-  font-size: clamp(36px, 10vw, 54px);
-  line-height: 0.95;
+.experience-placeholder h1 {
+  margin: 10px 0 8px;
+  font-size: 42px;
 }
 
-p {
-  margin: 0 0 24px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.68);
+.experience-placeholder p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
 }
 
-.link {
-  display: inline-flex;
-  padding: 12px 16px;
-  border-radius: 999px;
-  background: #fff;
-  color: #000;
-  font-weight: 700;
-  text-decoration: none;
+@media (max-height: 760px) {
+  .ios-passcode-panel {
+    padding-top: 18px;
+  }
+
+  .ios-time {
+    font-size: 58px;
+  }
+
+  .ios-date {
+    font-size: 16px;
+  }
+
+  .ios-keypad {
+    grid-template-columns: repeat(3, 68px);
+    gap: 9px 18px;
+  }
+
+  .ios-key,
+  .ios-delete,
+  .ios-key-spacer {
+    width: 68px;
+    height: 68px;
+  }
+
+  .ios-dots {
+    margin-bottom: 19px;
+  }
 }
