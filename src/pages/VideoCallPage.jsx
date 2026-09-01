@@ -1,14 +1,20 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import IPhoneLockScreen from '../components/IPhoneLockScreen'
 
 export default function VideoCallPage() {
+  const [unlocked, setUnlocked] = useState(false)
+
+  if (!unlocked) {
+    return <IPhoneLockScreen pin="4567" onUnlock={() => setUnlocked(true)} />
+  }
+
   return (
-    <main className="screen">
-      <section className="panel">
-        <span className="eyebrow">Sky Mobile</span>
-        <h1>Video call</h1>
-        <p>Base route pronta per la videochiamata simulata con video preregistrati e risposte.</p>
-        <Link className="link" to="/game">Vai a /game</Link>
-      </section>
+    <main className="experience-placeholder">
+      <div>
+        <span>Sky Mobile</span>
+        <h1>Video call unlocked</h1>
+        <p>Qui entrerà la videochiamata simulata.</p>
+      </div>
     </main>
   )
 }
