@@ -107,11 +107,6 @@ export default function IPhoneLockScreen({ pin, onUnlock }) {
           </div>
 
           {error && <div className="ios-passcode-error">Codice errato</div>}
-
-          <div className="ios-bottom-actions">
-            <button type="button">Emergenza</button>
-            <button type="button" onClick={() => { setValue(''); setError(false) }}>Annulla</button>
-          </div>
         </div>
       </section>
 
