@@ -1,20 +1,14 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import IPhoneLockScreen from '../components/IPhoneLockScreen'
+import VideoCallExperience from '../components/VideoCallExperience'
 
 export default function VideoCallPage() {
-  const [unlocked, setUnlocked] = useState(false)
+  const [phase, setPhase] = useState('locked')
+  const reset = useCallback(() => setPhase('locked'), [])
 
-  if (!unlocked) {
-    return <IPhoneLockScreen pin="4567" onUnlock={() => setUnlocked(true)} />
+  if (phase === 'locked') {
+    return <IPhoneLockScreen pin="4567" onUnlock={() => setPhase('experience')} />
   }
 
-  return (
-    <main className="experience-placeholder">
-      <div>
-        <span>Sky Mobile</span>
-        <h1>Video call unlocked</h1>
-        <p>Qui entrerà la videochiamata simulata.</p>
-      </div>
-    </main>
-  )
+  return <VideoCallExperience onReset={reset} />
 }
