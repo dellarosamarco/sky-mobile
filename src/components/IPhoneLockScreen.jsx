@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { primeAudio } from '../utils/audio'
 
 const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, ',', 0, 'delete']
 
@@ -55,6 +56,7 @@ export default function IPhoneLockScreen({ pin, onUnlock }) {
 
     if (next.length === pin.length) {
       if (next === pin) {
+        primeAudio()
         window.setTimeout(() => onUnlock?.(), 160)
       } else {
         window.setTimeout(() => {
