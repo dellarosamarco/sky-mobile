@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, 'delete']
+const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, ',', 0, 'delete']
 
 function LockIcon() {
   return (
@@ -41,8 +41,6 @@ export default function IPhoneLockScreen({ pin, onUnlock }) {
   )
 
   const press = (key) => {
-    if (key === null) return
-
     if (key === 'delete') {
       setError(false)
       setValue((current) => current.slice(0, -1))
@@ -79,33 +77,26 @@ export default function IPhoneLockScreen({ pin, onUnlock }) {
 
         <div className="ios-passcode-panel">
           <div className="ios-passcode-title">Inserisci codice</div>
-          <div className={`ios-dots ${error ? 'is-error' : ''}`} aria-label={`${value.length} cifre inserite`}>
+          <div className={`ios-dots ${error ? 'is-error' : ''}`} aria-label={`${value.length} caratteri inseriti`}>
             {Array.from({ length: pin.length }).map((_, index) => (
               <span key={index} className={index < value.length ? 'filled' : ''} />
             ))}
           </div>
 
           <div className="ios-keypad">
-            {keys.map((key, index) => {
-              if (key === null) return <div className="ios-key-spacer" key={`spacer-${index}`} />
+            {keys.map((key) => {
               if (key === 'delete') {
                 return (
-                  <button
-                    className="ios-delete"
-                    key="delete"
-                    type="button"
-                    onClick={() => press('delete')}
-                    aria-label="Elimina cifra"
-                  >
+                  <button className="ios-delete" key="delete" type="button" onClick={() => press('delete')} aria-label="Elimina carattere">
                     <DeleteIcon />
                   </button>
                 )
               }
 
               return (
-                <button className="ios-key" key={key} type="button" onClick={() => press(key)}>
+                <button className={`ios-key ${key === ',' ? 'ios-comma' : ''}`} key={key} type="button" onClick={() => press(key)}>
                   <span>{key}</span>
-                  {key > 1 && key < 10 && (
+                  {typeof key === 'number' && key > 1 && key < 10 && (
                     <small>{['', '', 'ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQRS', 'TUV', 'WXYZ'][key]}</small>
                   )}
                 </button>
@@ -113,9 +104,11 @@ export default function IPhoneLockScreen({ pin, onUnlock }) {
             })}
           </div>
 
+          {error && <div className="ios-passcode-error">Codice errato</div>}
+
           <div className="ios-bottom-actions">
             <button type="button">Emergenza</button>
-            <button type="button" onClick={() => setValue('')}>Annulla</button>
+            <button type="button" onClick={() => { setValue(''); setError(false) }}>Annulla</button>
           </div>
         </div>
       </section>
