@@ -1,20 +1,19 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import IPhoneLockScreen from '../components/IPhoneLockScreen'
+import PhoneHome from '../components/PhoneHome'
+import GameExperience from '../components/GameExperience'
 
 export default function GamePage() {
-  const [unlocked, setUnlocked] = useState(false)
+  const [phase, setPhase] = useState('locked')
+  const reset = useCallback(() => setPhase('locked'), [])
 
-  if (!unlocked) {
-    return <IPhoneLockScreen pin="1234" onUnlock={() => setUnlocked(true)} />
+  if (phase === 'locked') {
+    return <IPhoneLockScreen pin="9,90" onUnlock={() => setPhase('home')} />
   }
 
-  return (
-    <main className="experience-placeholder">
-      <div>
-        <span>Sky Mobile</span>
-        <h1>Game unlocked</h1>
-        <p>Qui entrerà il minigioco delle monete.</p>
-      </div>
-    </main>
-  )
+  if (phase === 'home') {
+    return <PhoneHome mode="game" onOpen={() => setPhase('game')} />
+  }
+
+  return <GameExperience onReset={reset} />
 }
