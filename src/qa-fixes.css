@@ -1,0 +1,47 @@
+/* Visual QA fixes applied after responsive kiosk styles. */
+
+/* Keep the gameplay HUD fully legible while SIM cards fall behind it. */
+.game-hud > div {
+  background: rgba(3, 14, 42, 0.9);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+}
+
+/* Use a universally recognizable handset glyph rather than placeholder symbols. */
+.call-action > span,
+.call-controls .hangup {
+  font-size: 0;
+}
+
+.call-action > span::before,
+.call-controls .hangup::before {
+  content: "☎";
+  display: block;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(30px, 7vw, 48px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.call-action.accept > span {
+  transform: none;
+}
+
+.call-action.accept > span::before {
+  transform: rotate(-18deg);
+}
+
+.call-action.decline > span::before,
+.call-controls .hangup::before {
+  transform: rotate(135deg);
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .call-action > span::before {
+    font-size: clamp(72px, 5.2vw, 112px);
+  }
+
+  .call-controls .hangup::before {
+    font-size: clamp(42px, 3.2vw, 68px);
+  }
+}
