@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { getAudioContext } from '../utils/audio'
 
 const GAME_SECONDS = 59
 const COUNTDOWN_SECONDS = 5
@@ -23,16 +24,12 @@ function SkySim({ style }) {
 }
 
 function useArcadeAudio() {
-  const contextRef = useRef(null)
   const musicTimerRef = useRef(null)
 
   const ensureContext = useCallback(() => {
-    if (!contextRef.current) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext
-      if (AudioContext) contextRef.current = new AudioContext()
-    }
-    if (contextRef.current?.state === 'suspended') contextRef.current.resume().catch(() => {})
-    return contextRef.current
+    const context = getAudioContext()
+    if (context?.state === 'suspended') context.resume().catch(() => {})
+    return context
   }, [])
 
   const tone = useCallback((frequency, duration = 0.08, volume = 0.05, type = 'sine') => {
@@ -74,10 +71,7 @@ function useArcadeAudio() {
     musicTimerRef.current = null
   }, [])
 
-  useEffect(() => () => {
-    stopMusic()
-    contextRef.current?.close?.().catch(() => {})
-  }, [stopMusic])
+  useEffect(() => () => stopMusic(), [stopMusic])
 
   return useMemo(
     () => ({ ensureContext, collect, miss, countdown, startMusic, stopMusic }),
