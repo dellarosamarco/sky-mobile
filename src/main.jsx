@@ -5,6 +5,7 @@ import App from './App'
 import './styles.css'
 import './experience.css'
 import './kiosk.css'
+import './qa-fixes.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
