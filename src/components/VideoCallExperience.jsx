@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PhoneHome from './PhoneHome'
+import { getAudioContext } from '../utils/audio'
 
 const TALENTS = [
   {
@@ -41,17 +42,24 @@ const QUESTIONS = [
 
 const randomItem = (items) => items[Math.floor(Math.random() * items.length)]
 
+function nextTalent() {
+  try {
+    const previous = Number(window.sessionStorage.getItem('sky-mobile-last-talent') ?? -1)
+    const index = (previous + 1) % TALENTS.length
+    window.sessionStorage.setItem('sky-mobile-last-talent', String(index))
+    return TALENTS[index]
+  } catch {
+    return randomItem(TALENTS)
+  }
+}
+
 function useRingtone(active) {
-  const contextRef = useRef(null)
   const timerRef = useRef(null)
 
   useEffect(() => {
     if (!active) return undefined
-    const AudioContext = window.AudioContext || window.webkitAudioContext
-    if (!AudioContext) return undefined
-
-    if (!contextRef.current) contextRef.current = new AudioContext()
-    const ctx = contextRef.current
+    const ctx = getAudioContext()
+    if (!ctx) return undefined
     ctx.resume?.().catch(() => {})
 
     const ring = () => {
@@ -78,8 +86,6 @@ function useRingtone(active) {
       timerRef.current = null
     }
   }, [active])
-
-  useEffect(() => () => contextRef.current?.close?.().catch(() => {}), [])
 }
 
 function CallIcon({ type }) {
@@ -98,14 +104,13 @@ export default function VideoCallExperience({ onReset }) {
   const streamRef = useRef(null)
   const fallbackTimerRef = useRef(null)
 
-  const talent = useMemo(() => randomItem(TALENTS), [])
+  const talent = useMemo(() => nextTalent(), [])
   const question = useMemo(() => randomItem(QUESTIONS), [])
 
   const stopCamera = useCallback(() => {
     streamRef.current?.getTracks?.().forEach((track) => track.stop())
     streamRef.current = null
     if (cameraVideoRef.current) cameraVideoRef.current.srcObject = null
-    setCameraState('idle')
   }, [])
 
   const startCamera = useCallback(async () => {
@@ -117,15 +122,17 @@ export default function VideoCallExperience({ onReset }) {
       setCameraState('loading')
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
       streamRef.current = stream
-      if (cameraVideoRef.current) {
-        cameraVideoRef.current.srcObject = stream
-        await cameraVideoRef.current.play().catch(() => {})
-      }
       setCameraState('ready')
     } catch {
       setCameraState('denied')
     }
   }, [])
+
+  useEffect(() => {
+    if (cameraState !== 'ready' || !cameraVideoRef.current || !streamRef.current) return
+    cameraVideoRef.current.srcObject = streamRef.current
+    cameraVideoRef.current.play().catch(() => {})
+  }, [cameraState, phase])
 
   useEffect(() => () => {
     stopCamera()
@@ -184,11 +191,10 @@ export default function VideoCallExperience({ onReset }) {
     setVideoStage('intro')
     setVideoFailed(false)
     setPhase('call')
-    await startCamera()
-    window.setTimeout(() => {
-      const player = talentVideoRef.current
-      if (player) player.play().catch(() => scheduleFallback('intro'))
-    }, 0)
+    await new Promise((resolve) => window.setTimeout(resolve, 0))
+    startCamera()
+    const player = talentVideoRef.current
+    if (player) player.play().catch(() => scheduleFallback('intro'))
   }
 
   const currentVideo = videoStage === 'intro' ? talent.intro : videoStage === 'correct' ? talent.correct : talent.wrong
@@ -221,7 +227,7 @@ export default function VideoCallExperience({ onReset }) {
 
   if (phase === 'incoming') {
     return (
-      <main className="incoming-call" onPointerDown={() => {}}>
+      <main className="incoming-call">
         <div className="call-backdrop" aria-hidden="true" />
         <div className="incoming-content">
           <div className="caller-avatar">{talent.avatar}</div>
