@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const GAME_SECONDS = 59
 const COUNTDOWN_SECONDS = 5
@@ -56,7 +56,6 @@ function useArcadeAudio() {
   }, [tone])
 
   const miss = useCallback(() => tone(180, 0.11, 0.025, 'sine'), [tone])
-
   const countdown = useCallback((last = false) => tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.045, 'square'), [tone])
 
   const startMusic = useCallback(() => {
@@ -80,7 +79,10 @@ function useArcadeAudio() {
     contextRef.current?.close?.().catch(() => {})
   }, [stopMusic])
 
-  return { ensureContext, collect, miss, countdown, startMusic, stopMusic }
+  return useMemo(
+    () => ({ ensureContext, collect, miss, countdown, startMusic, stopMusic }),
+    [ensureContext, collect, miss, countdown, startMusic, stopMusic],
+  )
 }
 
 export default function GameExperience({ onReset }) {
