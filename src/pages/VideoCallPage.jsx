@@ -7,7 +7,7 @@ export default function VideoCallPage() {
   const reset = useCallback(() => setPhase('locked'), [])
 
   if (phase === 'locked') {
-    return <IPhoneLockScreen pin="4567" onUnlock={() => setPhase('experience')} />
+    return <IPhoneLockScreen pin="1234" onUnlock={() => setPhase('experience')} />
   }
 
   return <VideoCallExperience onReset={reset} />
