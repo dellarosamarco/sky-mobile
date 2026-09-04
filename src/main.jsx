@@ -6,6 +6,7 @@ import './styles.css'
 import './experience.css'
 import './kiosk.css'
 import './qa-fixes.css'
+import './game-rules.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
