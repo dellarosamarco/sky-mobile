@@ -4,6 +4,8 @@ import { getAudioContext } from '../utils/audio'
 const GAME_SECONDS = 59
 const COUNTDOWN_SECONDS = 5
 const RESULT_SECONDS = 5
+const TARGET_SIMS = 45
+const MAX_ATTEMPTS = 2
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value))
@@ -84,6 +86,8 @@ export default function GameExperience({ onReset }) {
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
   const [timeLeft, setTimeLeft] = useState(GAME_SECONDS)
   const [score, setScore] = useState(0)
+  const [simCount, setSimCount] = useState(0)
+  const [attempt, setAttempt] = useState(1)
   const [sims, setSims] = useState([])
   const [catcherX, setCatcherX] = useState(50)
   const [flash, setFlash] = useState(false)
@@ -93,6 +97,7 @@ export default function GameExperience({ onReset }) {
   const lastSpawnRef = useRef(0)
   const nextIdRef = useRef(1)
   const scoreRef = useRef(0)
+  const simCountRef = useRef(0)
   const catcherXRef = useRef(50)
   const audio = useArcadeAudio()
 
@@ -129,7 +134,9 @@ export default function GameExperience({ onReset }) {
     lastSpawnRef.current = gameStartedAtRef.current - 700
     setTimeLeft(GAME_SECONDS)
     setScore(0)
+    setSimCount(0)
     scoreRef.current = 0
+    simCountRef.current = 0
     setSims([])
     audio.startMusic()
 
@@ -141,7 +148,13 @@ export default function GameExperience({ onReset }) {
 
       if (elapsedSeconds >= GAME_SECONDS) {
         audio.stopMusic()
-        setPhase('results')
+        if (simCountRef.current >= TARGET_SIMS) {
+          setPhase('results')
+        } else if (attempt < MAX_ATTEMPTS) {
+          setPhase('failed')
+        } else {
+          setPhase('failed-final')
+        }
         return
       }
 
@@ -159,7 +172,9 @@ export default function GameExperience({ onReset }) {
 
           if (catchZone && distance < 11) {
             scoreRef.current += 10
+            simCountRef.current += 1
             setScore(scoreRef.current)
+            setSimCount(simCountRef.current)
             setFlash(true)
             window.setTimeout(() => setFlash(false), 100)
             audio.collect()
@@ -198,13 +213,19 @@ export default function GameExperience({ onReset }) {
       cancelAnimationFrame(animationFrame)
       audio.stopMusic()
     }
-  }, [phase, audio])
+  }, [phase, attempt, audio])
 
   useEffect(() => {
-    if (phase !== 'results') return undefined
+    if (phase !== 'results' && phase !== 'failed-final') return undefined
     const timer = window.setTimeout(() => onReset?.(), RESULT_SECONDS * 1000)
     return () => window.clearTimeout(timer)
   }, [phase, onReset])
+
+  const retry = () => {
+    if (attempt >= MAX_ATTEMPTS) return
+    setAttempt((current) => current + 1)
+    setPhase('countdown')
+  }
 
   const moveCatcher = (clientX) => {
     const rect = fieldRef.current?.getBoundingClientRect()
@@ -226,7 +247,7 @@ export default function GameExperience({ onReset }) {
         <div className="game-logo"><b>sky</b><span>mobile</span></div>
         <p className="game-kicker">SIM CATCH</p>
         <h1>Con Sky Mobile hai <span>_____ _____.</span></h1>
-        <p className="game-instruction">Prendi quante più SIM nel minor tempo possibile.</p>
+        <p className="game-instruction">Raccogli almeno {TARGET_SIMS} SIM prima dello scadere del tempo.</p>
         <div className="intro-sim-card"><SkySim /></div>
       </main>
     )
@@ -235,9 +256,44 @@ export default function GameExperience({ onReset }) {
   if (phase === 'countdown') {
     return (
       <main className="game-countdown" onPointerDown={() => audio.ensureContext()}>
-        <span>Preparati</span>
+        <span>Tentativo {attempt} di {MAX_ATTEMPTS}</span>
         <strong key={countdown}>{countdown}</strong>
-        <p>Trascina il catcher con il dito</p>
+        <p>Obiettivo: {TARGET_SIMS} SIM</p>
+      </main>
+    )
+  }
+
+  if (phase === 'failed') {
+    return (
+      <main className="game-results game-failure-screen">
+        <div className="results-card failure-card">
+          <div className="result-error">×</div>
+          <span>Tempo scaduto</span>
+          <h1>{simCount}</h1>
+          <p>SIM prese su {TARGET_SIMS}</p>
+          <div className="result-divider" />
+          <strong>Non abbastanza SIM</strong>
+          <p className="result-copy">Ti resta un ultimo tentativo.</p>
+          <button className="retry-button" type="button" onClick={retry}>Riprova</button>
+          <small>Tentativo {attempt} di {MAX_ATTEMPTS}</small>
+        </div>
+      </main>
+    )
+  }
+
+  if (phase === 'failed-final') {
+    return (
+      <main className="game-results game-failure-screen">
+        <div className="results-card failure-card">
+          <div className="result-error">×</div>
+          <span>Tempo scaduto</span>
+          <h1>{simCount}</h1>
+          <p>SIM prese su {TARGET_SIMS}</p>
+          <div className="result-divider" />
+          <strong>Tentativi terminati</strong>
+          <p className="result-copy">Hai utilizzato entrambi i tentativi.</p>
+          <small>Reset automatico in {RESULT_SECONDS} secondi</small>
+        </div>
       </main>
     )
   }
@@ -245,14 +301,14 @@ export default function GameExperience({ onReset }) {
   if (phase === 'results') {
     return (
       <main className="game-results">
-        <div className="results-card">
+        <div className="results-card success-card">
           <div className="result-check">✓</div>
-          <span>Tempo!</span>
-          <h1>{score}</h1>
-          <p>punti</p>
+          <span>Obiettivo raggiunto!</span>
+          <h1>{simCount}</h1>
+          <p>SIM prese</p>
           <div className="result-divider" />
-          <strong>Continua il percorso</strong>
-          <p className="result-copy">Non hai raggiunto il record! Continua il percorso e mettiti alla prova nella prossima tappa.</p>
+          <strong>Complimenti!</strong>
+          <p className="result-copy">Hai raccolto almeno {TARGET_SIMS} SIM. Continua il percorso verso la prossima tappa.</p>
           <small>Reset automatico in {RESULT_SECONDS} secondi</small>
         </div>
       </main>
@@ -269,12 +325,13 @@ export default function GameExperience({ onReset }) {
       }}
     >
       <div className="game-field-bg" aria-hidden="true" />
-      <header className="game-hud">
-        <div><small>PUNTI</small><strong>{score}</strong></div>
+      <header className="game-hud game-hud-three">
+        <div><small>SIM PRESE</small><strong>{simCount}<span className="target-sims">/{TARGET_SIMS}</span></strong></div>
+        <div><small>TENTATIVO</small><strong>{attempt}/{MAX_ATTEMPTS}</strong></div>
         <div className={timeLeft <= 10 ? 'urgent' : ''}><small>TEMPO</small><strong>{formatTime(timeLeft)}</strong></div>
       </header>
 
-      <div className="game-copy-strip">Prendi le SIM!</div>
+      <div className="game-copy-strip">Raccogli almeno {TARGET_SIMS} SIM</div>
 
       {sims.map((sim) => (
         <SkySim
