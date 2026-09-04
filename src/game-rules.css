@@ -1,0 +1,114 @@
+.game-hud-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.game-hud-three > div {
+  min-width: 0;
+  text-align: center !important;
+}
+
+.target-sims {
+  margin-left: 2px;
+  font-size: .55em;
+  font-weight: 700;
+  opacity: .62;
+}
+
+.game-failure-screen {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 58, 91, .22), transparent 34%),
+    radial-gradient(circle at 90% 78%, rgba(231, 0, 126, .18), transparent 30%),
+    linear-gradient(155deg, #2a0716, #170815 54%, #0c0c25);
+}
+
+.failure-card {
+  border-color: rgba(255, 101, 129, .24);
+}
+
+.result-error {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ff334f, #c51f65);
+  box-shadow: 0 14px 36px rgba(188, 18, 72, .28);
+  font-size: 42px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.retry-button {
+  width: min(100%, 360px);
+  min-height: 64px;
+  margin: 0 auto 24px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  color: #13131b;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .2);
+}
+
+.retry-button:active {
+  transform: scale(.98);
+}
+
+@media (max-width: 520px) {
+  .game-hud-three {
+    left: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
+  .game-hud-three > div {
+    padding: 10px 7px;
+    border-radius: 14px;
+  }
+
+  .game-hud-three small {
+    font-size: 8px;
+    letter-spacing: .11em;
+  }
+
+  .game-hud-three strong {
+    font-size: clamp(20px, 5.7vw, 28px);
+  }
+
+  .game-hud-three .urgent strong {
+    font-size: clamp(18px, 5vw, 26px);
+  }
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .game-hud-three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .game-hud-three > div {
+    min-width: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .result-error {
+    width: clamp(130px, 10vw, 210px);
+    height: clamp(130px, 10vw, 210px);
+    margin-bottom: 38px;
+    font-size: clamp(80px, 6vw, 126px);
+  }
+
+  .retry-button {
+    width: min(72%, 720px);
+    min-height: clamp(120px, 8vw, 170px);
+    margin-bottom: 42px;
+    border-radius: 34px;
+    font-size: clamp(38px, 2.8vw, 58px);
+  }
+}
