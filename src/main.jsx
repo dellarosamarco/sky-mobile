@@ -7,6 +7,7 @@ import './experience.css'
 import './kiosk.css'
 import './qa-fixes.css'
 import './game-rules.css'
+import './ios-home-polish.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
