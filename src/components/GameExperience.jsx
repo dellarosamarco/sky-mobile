@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getAudioContext } from '../utils/audio'
 
-const GAME_SECONDS = 59
+const GAME_SECONDS = 29
 const COUNTDOWN_SECONDS = 5
 const RESULT_SECONDS = 5
 const TARGET_SIMS = 45
@@ -137,8 +137,6 @@ export default function GameExperience({ onReset }) {
     const rect = field.getBoundingClientRect()
     const x = clamp(((clientX - rect.left) / rect.width) * 100, 8, 92)
 
-    // Collision logic reads the ref immediately; the DOM is updated directly so
-    // finger tracking never waits for a React render.
     catcherXRef.current = x
     catcher.style.left = `${x}%`
   }, [])
