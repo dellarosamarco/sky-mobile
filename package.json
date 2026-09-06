@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "prepare:icons": "node scripts/fetch-apple-icons.mjs",
+    "dev": "npm run prepare:icons && vite",
+    "build": "npm run prepare:icons && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
