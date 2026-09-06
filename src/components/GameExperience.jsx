@@ -377,7 +377,7 @@ export default function GameExperience({ onReset }) {
           <p>SIM prese</p>
           <div className="result-divider" />
           <strong>Complimenti!</strong>
-          <p className="result-copy">Hai raccolto almeno {TARGET_SIMS} SIM. Continua il percorso verso la prossima tappa.</p>
+          <p className="result-copy">Hai raccolto almeno {TARGET_SIMS} SIM.</p>
           <small>Reset automatico in {RESULT_SECONDS} secondi</small>
         </div>
       </main>
