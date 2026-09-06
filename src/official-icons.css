@@ -1,0 +1,35 @@
+/* Official Apple App Store artwork generated into /public/app-icons at build time. */
+.ios-official-app-icon {
+  overflow: hidden;
+  background: transparent !important;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, .2);
+}
+
+.ios-app-artwork,
+.ios-dock-app img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.phone-dock .ios-dock-app {
+  overflow: hidden;
+  padding: 0;
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .14);
+}
+
+.phone-dock .ios-dock-app img {
+  border-radius: inherit;
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .ios-official-app-icon,
+  .phone-dock .ios-dock-app {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .18);
+  }
+}
