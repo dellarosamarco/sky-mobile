@@ -62,25 +62,32 @@ function useRingtone(active) {
     if (!ctx) return undefined
     ctx.resume?.().catch(() => {})
 
+    const playVoice = (frequency, start, duration, volume) => {
+      const oscillator = ctx.createOscillator()
+      const gain = ctx.createGain()
+      oscillator.type = 'sine'
+      oscillator.frequency.value = frequency
+      gain.gain.setValueAtTime(0.0001, start)
+      gain.gain.exponentialRampToValueAtTime(volume, start + 0.025)
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+      oscillator.connect(gain)
+      gain.connect(ctx.destination)
+      oscillator.start(start)
+      oscillator.stop(start + duration + 0.03)
+    }
+
     const ring = () => {
-      const start = ctx.currentTime
-      ;[440, 554].forEach((frequency, index) => {
-        const oscillator = ctx.createOscillator()
-        const gain = ctx.createGain()
-        oscillator.type = 'sine'
-        oscillator.frequency.value = frequency
-        gain.gain.setValueAtTime(0.0001, start)
-        gain.gain.exponentialRampToValueAtTime(0.035, start + 0.02 + index * 0.01)
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.42)
-        oscillator.connect(gain)
-        gain.connect(ctx.destination)
-        oscillator.start(start)
-        oscillator.stop(start + 0.45)
+      const now = ctx.currentTime
+      const chord = [659, 784, 988]
+      ;[0, 0.46].forEach((pulseOffset) => {
+        chord.forEach((frequency, index) => {
+          playVoice(frequency, now + pulseOffset + index * 0.012, 0.31, index === 0 ? 0.026 : 0.018)
+        })
       })
     }
 
     ring()
-    timerRef.current = window.setInterval(ring, 1700)
+    timerRef.current = window.setInterval(ring, 1750)
     return () => {
       if (timerRef.current) window.clearInterval(timerRef.current)
       timerRef.current = null
@@ -88,13 +95,8 @@ function useRingtone(active) {
   }, [active])
 }
 
-function CallIcon({ type }) {
-  return <span aria-hidden="true">{type === 'accept' ? '⌕' : '×'}</span>
-}
-
 export default function VideoCallExperience({ onReset }) {
   const [phase, setPhase] = useState('home')
-  const [ringCount, setRingCount] = useState(0)
   const [videoStage, setVideoStage] = useState('intro')
   const [videoFailed, setVideoFailed] = useState(false)
   const [cameraState, setCameraState] = useState('idle')
@@ -149,17 +151,15 @@ export default function VideoCallExperience({ onReset }) {
 
   useEffect(() => {
     if (phase !== 'incoming') return undefined
-    setRingCount(1)
     let count = 1
     const timer = window.setInterval(() => {
       count += 1
-      setRingCount(count)
       if (count >= 10) {
         window.clearInterval(timer)
         setEndingCopy('Chiamata non risposta')
         setPhase('ended')
       }
-    }, 1700)
+    }, 1750)
     return () => window.clearInterval(timer)
   }, [phase])
 
@@ -226,29 +226,32 @@ export default function VideoCallExperience({ onReset }) {
   if (phase === 'home') return <PhoneHome mode="videocall" />
 
   if (phase === 'incoming') {
-    return (
-      <main className="incoming-call">
-        <div className="call-backdrop" aria-hidden="true" />
-        <div className="incoming-content">
-          <div className="caller-avatar">{talent.avatar}</div>
-          <span>Videochiamata in arrivo</span>
-          <h1>{talent.name}</h1>
-          <p>Sky Mobile</p>
-          <small>Squillo {Math.min(ringCount, 10)} di 10</small>
+    const banner = (
+      <section className="ios-call-banner" role="dialog" aria-label={`Videochiamata in arrivo da ${talent.name}`}>
+        <div className="ios-call-banner-avatar">{talent.avatar}</div>
+        <div className="ios-call-banner-copy">
+          <small>VIDEOCHIAMATA IN ARRIVO</small>
+          <strong>{talent.name}</strong>
+          <span>Sky Mobile</span>
         </div>
-        <div className="incoming-actions">
-          <button className="call-action decline" type="button" onClick={() => { setEndingCopy('Chiamata terminata'); setPhase('ended') }}>
-            <CallIcon type="decline" />
-            <small>Rifiuta</small>
-          </button>
-          <button className="call-action accept" type="button" onClick={acceptCall}>
-            <CallIcon type="accept" />
-            <small>Rispondi</small>
-          </button>
+        <div className="ios-call-banner-actions">
+          <button
+            className="ios-call-banner-button decline"
+            type="button"
+            onClick={() => { setEndingCopy('Chiamata terminata'); setPhase('ended') }}
+            aria-label="Rifiuta chiamata"
+          >×</button>
+          <button
+            className="ios-call-banner-button accept"
+            type="button"
+            onClick={acceptCall}
+            aria-label="Rispondi alla videochiamata"
+          >☎</button>
         </div>
-        <div className="ios-home-indicator" aria-hidden="true" />
-      </main>
+      </section>
     )
+
+    return <PhoneHome mode="videocall" overlay={banner} />
   }
 
   if (phase === 'ended') {
@@ -302,7 +305,7 @@ export default function VideoCallExperience({ onReset }) {
       </div>
 
       <div className="call-controls" aria-hidden="true">
-        <span>◉</span><span>♬</span><span className="hangup">⌕</span>
+        <span>◉</span><span>♬</span><span className="hangup">☎</span>
       </div>
 
       {phase === 'question' && (
