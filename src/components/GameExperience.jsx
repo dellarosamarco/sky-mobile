@@ -4,7 +4,7 @@ import { getAudioContext } from '../utils/audio'
 const GAME_SECONDS = 29
 const COUNTDOWN_SECONDS = 5
 const RESULT_SECONDS = 5
-const TARGET_SIMS = 45
+const TARGET_SIMS = 35
 const MAX_ATTEMPTS = 2
 
 function clamp(value, min, max) {
@@ -341,7 +341,7 @@ export default function GameExperience({ onReset }) {
           <h1>{simCount}</h1>
           <p>SIM prese su {TARGET_SIMS}</p>
           <div className="result-divider" />
-          <strong>Non abbastanza SIM</strong>
+          <strong>Non hai raccolto abbastanza SIM</strong>
           <p className="result-copy">Ti resta un ultimo tentativo.</p>
           <button className="retry-button" type="button" onClick={retry}>Riprova</button>
           <small>Tentativo {attempt} di {MAX_ATTEMPTS}</small>
