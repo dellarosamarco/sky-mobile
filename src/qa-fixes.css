@@ -6,6 +6,20 @@
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
 }
 
+/* Keep gameplay touch input completely under the game, not the browser. */
+.game-field {
+  touch-action: none !important;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The catcher must track the finger immediately: never interpolate its X position. */
+.catcher {
+  transition: none !important;
+  will-change: left;
+}
+
 /* Use a universally recognizable handset glyph rather than placeholder symbols. */
 .call-action > span,
 .call-controls .hangup {
