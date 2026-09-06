@@ -89,9 +89,11 @@ export default function GameExperience({ onReset }) {
   const [simCount, setSimCount] = useState(0)
   const [attempt, setAttempt] = useState(1)
   const [sims, setSims] = useState([])
-  const [catcherX, setCatcherX] = useState(50)
   const [flash, setFlash] = useState(false)
+
   const fieldRef = useRef(null)
+  const catcherRef = useRef(null)
+  const activePointerRef = useRef(null)
   const gameStartedAtRef = useRef(0)
   const lastFrameRef = useRef(0)
   const lastSpawnRef = useRef(0)
@@ -99,6 +101,7 @@ export default function GameExperience({ onReset }) {
   const scoreRef = useRef(0)
   const simCountRef = useRef(0)
   const catcherXRef = useRef(50)
+  const lastDisplayedSecondRef = useRef(GAME_SECONDS)
   const audio = useArcadeAudio()
 
   useEffect(() => {
@@ -126,12 +129,89 @@ export default function GameExperience({ onReset }) {
     return () => window.clearInterval(timer)
   }, [phase, audio])
 
+  const moveCatcher = useCallback((clientX) => {
+    const field = fieldRef.current
+    const catcher = catcherRef.current
+    if (!field || !catcher) return
+
+    const rect = field.getBoundingClientRect()
+    const x = clamp(((clientX - rect.left) / rect.width) * 100, 8, 92)
+
+    // Collision logic reads the ref immediately; the DOM is updated directly so
+    // finger tracking never waits for a React render.
+    catcherXRef.current = x
+    catcher.style.left = `${x}%`
+  }, [])
+
+  useEffect(() => {
+    if (phase !== 'playing') return undefined
+
+    const field = fieldRef.current
+    if (!field) return undefined
+
+    const latestSample = (event) => {
+      const samples = typeof event.getCoalescedEvents === 'function' ? event.getCoalescedEvents() : null
+      return samples?.length ? samples[samples.length - 1] : event
+    }
+
+    const applyPointer = (event) => {
+      const sample = latestSample(event)
+      moveCatcher(sample.clientX)
+    }
+
+    const onPointerDown = (event) => {
+      if (activePointerRef.current !== null && activePointerRef.current !== event.pointerId) return
+      if (event.cancelable) event.preventDefault()
+      activePointerRef.current = event.pointerId
+      audio.ensureContext()
+      try {
+        field.setPointerCapture?.(event.pointerId)
+      } catch {
+        // Pointer capture can fail on a pointer that already ended; tracking still works.
+      }
+      applyPointer(event)
+    }
+
+    const onPointerMove = (event) => {
+      if (activePointerRef.current !== event.pointerId) return
+      if (event.cancelable) event.preventDefault()
+      applyPointer(event)
+    }
+
+    const onPointerEnd = (event) => {
+      if (activePointerRef.current !== event.pointerId) return
+      try {
+        if (field.hasPointerCapture?.(event.pointerId)) field.releasePointerCapture(event.pointerId)
+      } catch {
+        // Safe no-op when the browser already released the pointer.
+      }
+      activePointerRef.current = null
+    }
+
+    field.addEventListener('pointerdown', onPointerDown, { passive: false })
+    const moveEvent = 'onpointerrawupdate' in window ? 'pointerrawupdate' : 'pointermove'
+    field.addEventListener(moveEvent, onPointerMove, { passive: false })
+    field.addEventListener('pointerup', onPointerEnd)
+    field.addEventListener('pointercancel', onPointerEnd)
+
+    return () => {
+      field.removeEventListener('pointerdown', onPointerDown)
+      field.removeEventListener(moveEvent, onPointerMove)
+      field.removeEventListener('pointerup', onPointerEnd)
+      field.removeEventListener('pointercancel', onPointerEnd)
+      activePointerRef.current = null
+    }
+  }, [phase, moveCatcher, audio])
+
   useEffect(() => {
     if (phase !== 'playing') return undefined
 
     gameStartedAtRef.current = performance.now()
     lastFrameRef.current = gameStartedAtRef.current
     lastSpawnRef.current = gameStartedAtRef.current - 700
+    lastDisplayedSecondRef.current = GAME_SECONDS
+    catcherXRef.current = 50
+    if (catcherRef.current) catcherRef.current.style.left = '50%'
     setTimeLeft(GAME_SECONDS)
     setScore(0)
     setSimCount(0)
@@ -143,8 +223,12 @@ export default function GameExperience({ onReset }) {
     let animationFrame
     const tick = (now) => {
       const elapsedSeconds = (now - gameStartedAtRef.current) / 1000
-      const remaining = Math.ceil(GAME_SECONDS - elapsedSeconds)
-      setTimeLeft(Math.max(0, remaining))
+      const remaining = Math.max(0, Math.ceil(GAME_SECONDS - elapsedSeconds))
+
+      if (remaining !== lastDisplayedSecondRef.current) {
+        lastDisplayedSecondRef.current = remaining
+        setTimeLeft(remaining)
+      }
 
       if (elapsedSeconds >= GAME_SECONDS) {
         audio.stopMusic()
@@ -227,19 +311,6 @@ export default function GameExperience({ onReset }) {
     setPhase('countdown')
   }
 
-  const moveCatcher = (clientX) => {
-    const rect = fieldRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const x = clamp(((clientX - rect.left) / rect.width) * 100, 8, 92)
-    catcherXRef.current = x
-    setCatcherX(x)
-  }
-
-  const handlePointer = (event) => {
-    audio.ensureContext()
-    moveCatcher(event.clientX)
-  }
-
   if (phase === 'intro') {
     return (
       <main className="game-intro" onPointerDown={() => audio.ensureContext()}>
@@ -316,14 +387,7 @@ export default function GameExperience({ onReset }) {
   }
 
   return (
-    <main
-      ref={fieldRef}
-      className={`game-field ${flash ? 'is-catching' : ''}`}
-      onPointerDown={handlePointer}
-      onPointerMove={(event) => {
-        if (event.pointerType === 'touch' || event.buttons === 1) handlePointer(event)
-      }}
-    >
+    <main ref={fieldRef} className={`game-field ${flash ? 'is-catching' : ''}`}>
       <div className="game-field-bg" aria-hidden="true" />
       <header className="game-hud game-hud-three">
         <div><small>SIM PRESE</small><strong>{simCount}<span className="target-sims">/{TARGET_SIMS}</span></strong></div>
@@ -341,7 +405,7 @@ export default function GameExperience({ onReset }) {
       ))}
 
       <div className="catch-zone" aria-hidden="true" />
-      <div className="catcher" style={{ left: `${catcherX}%` }} aria-hidden="true">
+      <div ref={catcherRef} className="catcher" aria-hidden="true">
         <span className="catcher-glow" />
         <div className="catcher-body"><b>sky</b><small>mobile</small></div>
       </div>
