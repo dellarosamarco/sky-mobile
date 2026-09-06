@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const APPS = [
-  { id: 'messages', label: 'Messaggi', glyph: '●', tone: 'green' },
-  { id: 'camera', label: 'Fotocamera', glyph: '◉', tone: 'camera' },
-  { id: 'maps', label: 'Mappe', glyph: '⌖', tone: 'maps' },
-  { id: 'weather', label: 'Meteo', glyph: '☀', tone: 'weather' },
-  { id: 'photos', label: 'Foto', glyph: '✿', tone: 'photos' },
-  { id: 'notes', label: 'Note', glyph: '≡', tone: 'notes' },
-  { id: 'settings', label: 'Impostazioni', glyph: '⚙', tone: 'settings' },
+  { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
+  { id: 'camera', label: 'Fotocamera', icon: '/app-icons/camera.jpg' },
+  { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
+  { id: 'weather', label: 'Meteo', icon: '/app-icons/weather.jpg' },
+  { id: 'photos', label: 'Foto', icon: '/app-icons/photos.jpg' },
+  { id: 'notes', label: 'Note', icon: '/app-icons/notes.jpg' },
+  { id: 'safari', label: 'Safari', icon: '/app-icons/safari.jpg' },
+]
+
+const DOCK_APPS = [
+  { id: 'phone', label: 'Telefono', icon: '/app-icons/phone.jpg' },
+  { id: 'safari', label: 'Safari', icon: '/app-icons/safari.jpg' },
+  { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
+  { id: 'music', label: 'Musica', icon: '/app-icons/music.jpg' },
 ]
 
 function SkyIcon() {
@@ -15,6 +22,14 @@ function SkyIcon() {
     <span className="ios-app-icon sky-home-icon">
       <span className="sky-wordmark">sky</span>
       <span className="mobile-wordmark">mobile</span>
+    </span>
+  )
+}
+
+function AppleArtwork({ src, label }) {
+  return (
+    <span className="ios-app-icon ios-official-app-icon">
+      <img className="ios-app-artwork" src={src} alt={`${label} app`} draggable="false" />
     </span>
   )
 }
@@ -67,7 +82,7 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
         {APPS.map((app) => (
           <div className="ios-app-cell" key={app.id} aria-hidden="true">
             <div className="ios-app-button is-static">
-              <span className={`ios-app-icon app-${app.tone}`}><b>{app.glyph}</b></span>
+              <AppleArtwork src={app.icon} label={app.label} />
               <span className="ios-app-label">{app.label}</span>
             </div>
           </div>
@@ -78,10 +93,11 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
       <div className="ios-page-dots" aria-hidden="true"><i className="active" /><i /></div>
 
       <div className="phone-dock" aria-hidden="true">
-        <span className="dock-phone">☎</span>
-        <span className="dock-browser">⌖</span>
-        <span className="dock-messages">●</span>
-        <span className="dock-music">♫</span>
+        {DOCK_APPS.map((app) => (
+          <span className="ios-dock-app" key={app.id}>
+            <img src={app.icon} alt="" draggable="false" />
+          </span>
+        ))}
       </div>
 
       {overlay}
