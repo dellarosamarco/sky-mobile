@@ -1,0 +1,34 @@
+/* Keep full-screen experiences aligned with Safari's live visual viewport.
+   iOS can initially resolve 100svh to the smaller browser-chrome viewport,
+   briefly exposing the body background underneath the experience. */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.ios-lockscreen,
+.ios-passcode {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  html,
+  body,
+  #root {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .ios-lockscreen,
+  .ios-passcode {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+}
