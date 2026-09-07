@@ -50,22 +50,39 @@ function useArcadeAudio() {
   }, [ensureContext])
 
   const collect = useCallback(() => {
-    tone(880, 0.07, 0.06, 'triangle')
-    window.setTimeout(() => tone(1320, 0.08, 0.04, 'triangle'), 55)
+    tone(880, 0.07, 0.07, 'triangle')
+    window.setTimeout(() => tone(1320, 0.08, 0.05, 'triangle'), 55)
   }, [tone])
 
-  const miss = useCallback(() => tone(180, 0.11, 0.025, 'sine'), [tone])
-  const countdown = useCallback((last = false) => tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.045, 'square'), [tone])
+  const miss = useCallback(() => tone(180, 0.11, 0.035, 'sine'), [tone])
+  const countdown = useCallback((last = false) => tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.055, 'square'), [tone])
 
   const startMusic = useCallback(() => {
     ensureContext()
     if (musicTimerRef.current) return
-    const notes = [262, 330, 392, 330, 294, 370, 440, 370]
+
+    const melody = [392, 494, 587, 494, 440, 554, 659, 554]
+    const bass = [131, 147, 165, 147]
     let index = 0
-    musicTimerRef.current = window.setInterval(() => {
-      tone(notes[index % notes.length], 0.16, 0.012, 'triangle')
+
+    const playStep = () => {
+      tone(melody[index % melody.length], 0.2, 0.04, 'triangle')
+
+      if (index % 2 === 0) {
+        tone(bass[(index / 2) % bass.length], 0.24, 0.022, 'sine')
+      }
+
+      if (index % 4 === 0) {
+        tone(784, 0.045, 0.014, 'square')
+      }
+
       index += 1
-    }, 260)
+    }
+
+    // Play immediately instead of waiting for the first interval tick. This also
+    // makes it obvious on iOS that audio was successfully unlocked.
+    playStep()
+    musicTimerRef.current = window.setInterval(playStep, 260)
   }, [ensureContext, tone])
 
   const stopMusic = useCallback(() => {
@@ -106,12 +123,14 @@ export default function GameExperience({ onReset }) {
 
   useEffect(() => {
     if (phase !== 'intro') return undefined
+    audio.startMusic()
     const timer = window.setTimeout(() => setPhase('countdown'), 3300)
     return () => window.clearTimeout(timer)
-  }, [phase])
+  }, [phase, audio])
 
   useEffect(() => {
     if (phase !== 'countdown') return undefined
+    audio.startMusic()
     setCountdown(COUNTDOWN_SECONDS)
     let current = COUNTDOWN_SECONDS
     audio.countdown(false)
