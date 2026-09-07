@@ -9,6 +9,7 @@ import './qa-fixes.css'
 import './game-rules.css'
 import './ios-home-polish.css'
 import './official-icons.css'
+import './viewport-fix.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
