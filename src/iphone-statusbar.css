@@ -1,0 +1,148 @@
+/* Final iPhone-like status bar overrides for the simulated Home. */
+.iphone-statusbar {
+  position: relative;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: max(12px, env(safe-area-inset-top)) 22px 0;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .16);
+  pointer-events: none;
+}
+
+.iphone-status-time {
+  display: block;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.iphone-status-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 18px;
+}
+
+.iphone-cellular {
+  width: 18px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.iphone-wifi {
+  width: 20px;
+  height: 14px;
+  overflow: visible;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.iphone-wifi path {
+  fill: none;
+}
+
+.iphone-battery {
+  display: flex;
+  align-items: center;
+  gap: 1.5px;
+  height: 14px;
+}
+
+.iphone-battery-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 13px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 4px;
+}
+
+.iphone-battery-level {
+  position: absolute;
+  inset: 1.5px auto 1.5px 1.5px;
+  width: 78%;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.iphone-battery-value {
+  position: relative;
+  z-index: 1;
+  color: rgba(0, 0, 0, .74);
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: none;
+}
+
+.iphone-battery-cap {
+  width: 2px;
+  height: 6px;
+  border-radius: 0 2px 2px 0;
+  background: rgba(255, 255, 255, .62);
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .iphone-statusbar {
+    height: 122px;
+    padding: 42px 72px 0;
+  }
+
+  .iphone-status-time {
+    font-size: clamp(30px, 1.9vw, 42px);
+  }
+
+  .iphone-status-right {
+    gap: clamp(14px, .9vw, 20px);
+    height: 42px;
+  }
+
+  .iphone-cellular {
+    width: clamp(36px, 2.3vw, 50px);
+    height: clamp(24px, 1.55vw, 34px);
+  }
+
+  .iphone-wifi {
+    width: clamp(40px, 2.6vw, 56px);
+    height: clamp(28px, 1.8vw, 39px);
+    stroke-width: 1.65;
+  }
+
+  .iphone-battery {
+    gap: 3px;
+    height: clamp(29px, 1.9vw, 41px);
+  }
+
+  .iphone-battery-shell {
+    width: clamp(57px, 3.7vw, 80px);
+    height: clamp(29px, 1.9vw, 41px);
+    border-width: 2px;
+    border-radius: 9px;
+  }
+
+  .iphone-battery-level {
+    inset: 3px auto 3px 3px;
+    width: 78%;
+    border-radius: 5px;
+  }
+
+  .iphone-battery-value {
+    font-size: clamp(15px, 1vw, 21px);
+  }
+
+  .iphone-battery-cap {
+    width: 4px;
+    height: 15px;
+  }
+}
