@@ -10,6 +10,7 @@ import './game-rules.css'
 import './ios-home-polish.css'
 import './official-icons.css'
 import './viewport-fix.css'
+import './iphone-statusbar.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
