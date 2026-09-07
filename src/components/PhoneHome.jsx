@@ -34,6 +34,40 @@ function AppleArtwork({ src, label }) {
   )
 }
 
+function CellularIcon() {
+  return (
+    <svg className="iphone-cellular" viewBox="0 0 18 12" aria-hidden="true">
+      <rect x="0" y="7" width="3" height="5" rx="1" />
+      <rect x="5" y="5" width="3" height="7" rx="1" />
+      <rect x="10" y="2.5" width="3" height="9.5" rx="1" />
+      <rect x="15" y="0" width="3" height="12" rx="1" />
+    </svg>
+  )
+}
+
+function WifiIcon() {
+  return (
+    <svg className="iphone-wifi" viewBox="0 0 20 14" aria-hidden="true">
+      <path d="M1.5 4.1a13 13 0 0 1 17 0" />
+      <path d="M4.5 7.3a8.6 8.6 0 0 1 11 0" />
+      <path d="M7.6 10.3a4 4 0 0 1 4.8 0" />
+      <circle cx="10" cy="12.1" r="1.15" />
+    </svg>
+  )
+}
+
+function BatteryIcon() {
+  return (
+    <span className="iphone-battery" aria-hidden="true">
+      <span className="iphone-battery-shell">
+        <span className="iphone-battery-level" />
+        <span className="iphone-battery-value">78</span>
+      </span>
+      <span className="iphone-battery-cap" />
+    </span>
+  )
+}
+
 export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
   const isGame = mode === 'game'
   const [now, setNow] = useState(new Date())
@@ -52,15 +86,12 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
     <main className="phone-home">
       <div className="phone-home-wallpaper" aria-hidden="true" />
 
-      <header className="phone-statusbar">
-        <div className="phone-status-left">
-          <strong>{time}</strong>
-          <small>Sky Mobile</small>
-        </div>
-        <div className="phone-status-icons" aria-hidden="true">
-          <span className="signal">▮▮▮▮</span>
-          <span className="wifi">◒</span>
-          <span className="battery"><i />100</span>
+      <header className="phone-statusbar iphone-statusbar" aria-label={`Ora ${time}`}>
+        <strong className="iphone-status-time">{time}</strong>
+        <div className="iphone-status-right" aria-hidden="true">
+          <CellularIcon />
+          <WifiIcon />
+          <BatteryIcon />
         </div>
       </header>
 
