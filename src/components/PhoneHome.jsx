@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { primeAudio } from '../utils/audio'
 
 const APPS = [
   { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
@@ -82,6 +83,14 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
     [now],
   )
 
+  const openGame = () => {
+    // Safari/iOS only guarantees WebAudio playback when it is unlocked by a
+    // direct user gesture. Prime the shared context on the same tap that opens
+    // the Sky Mobile game so intro/game music cannot be silently blocked.
+    primeAudio()
+    onOpen?.()
+  }
+
   return (
     <main className="phone-home">
       <div className="phone-home-wallpaper" aria-hidden="true" />
@@ -98,7 +107,7 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
       <section className="iphone-home-grid" aria-label="Home smartphone">
         <div className="ios-app-cell sky-cell">
           {isGame ? (
-            <button className="ios-app-button sky-app-launcher" type="button" onClick={onOpen} aria-label="Apri Sky Mobile SIM Catch">
+            <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri Sky Mobile SIM Catch">
               <SkyIcon />
               <span className="ios-app-label">Sky Mobile</span>
             </button>
