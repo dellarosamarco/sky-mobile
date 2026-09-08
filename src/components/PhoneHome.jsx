@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { primeAudio } from '../utils/audio'
 
 const APPS = [
+  { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
   { id: 'appstore', label: 'App Store', icon: '/app-icons/appstore.svg' },
   { id: 'podcasts', label: 'Podcast', icon: '/app-icons/podcasts.jpg' },
   { id: 'settings', label: 'Impostazioni', icon: '/app-icons/settings.svg' },
@@ -10,7 +11,7 @@ const APPS = [
   { id: 'instagram', label: 'Instagram', icon: '/app-icons/instagram.jpg' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
   { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
-  { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
+  { id: 'sky', label: 'Sky Mobile' },
   { id: 'copilot365', label: 'Microsoft 365', icon: '/app-icons/copilot365.jpg' },
   { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
   { id: 'camera', label: 'Fotocamera', icon: '/app-icons/camera.jpg' },
@@ -114,31 +115,36 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
       </header>
 
       <section className="iphone-home-grid" aria-label="Home smartphone">
-        <div className="ios-app-cell sky-cell">
-          {isGame ? (
-            <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri Sky Mobile SIM Catch">
-              <SkyIcon />
-              <span className="ios-app-label">Sky Mobile</span>
-            </button>
-          ) : (
-            <div className="ios-app-button is-static" aria-hidden="true">
-              <SkyIcon />
-              <span className="ios-app-label">Sky Mobile</span>
-            </div>
-          )}
-        </div>
+        {APPS.map((app) => {
+          if (app.id === 'sky') {
+            return (
+              <div className="ios-app-cell sky-cell" key={app.id}>
+                {isGame ? (
+                  <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri Sky Mobile SIM Catch">
+                    <SkyIcon />
+                    <span className="ios-app-label">Sky Mobile</span>
+                  </button>
+                ) : (
+                  <div className="ios-app-button is-static" aria-hidden="true">
+                    <SkyIcon />
+                    <span className="ios-app-label">Sky Mobile</span>
+                  </div>
+                )}
+              </div>
+            )
+          }
 
-        {APPS.map((app) => (
-          <div className="ios-app-cell" key={app.id} aria-hidden="true">
-            <div className="ios-app-button is-static">
-              <AppleArtwork src={app.icon} label={app.label} />
-              <span className="ios-app-label">{app.label}</span>
+          return (
+            <div className="ios-app-cell" key={app.id} aria-hidden="true">
+              <div className="ios-app-button is-static">
+                <AppleArtwork src={app.icon} label={app.label} />
+                <span className="ios-app-label">{app.label}</span>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </section>
 
-      {isGame && <div className="ios-home-prompt">Tocca Sky Mobile per iniziare</div>}
       <div className="ios-page-dots" aria-hidden="true"><i className="active" /><i /></div>
 
       <div className="phone-dock" aria-hidden="true">
