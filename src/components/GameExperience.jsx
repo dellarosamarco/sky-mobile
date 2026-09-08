@@ -6,6 +6,7 @@ const COUNTDOWN_SECONDS = 5
 const RESULT_SECONDS = 5
 const TARGET_SIMS = 35
 const MAX_ATTEMPTS = 2
+const FINAL_WARNING_SECONDS = 5
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value))
@@ -57,6 +58,23 @@ function useArcadeAudio() {
   const miss = useCallback(() => tone(180, 0.11, 0.035, 'sine'), [tone])
   const countdown = useCallback((last = false) => tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.055, 'square'), [tone])
 
+  const finalWarning = useCallback((remaining) => {
+    if (remaining <= 0) {
+      tone(220, 0.34, 0.1, 'sawtooth')
+      window.setTimeout(() => tone(110, 0.42, 0.08, 'square'), 85)
+      return
+    }
+
+    const progress = FINAL_WARNING_SECONDS - remaining
+    const frequency = 720 + progress * 115
+    const volume = 0.075 + progress * 0.008
+    tone(frequency, 0.1, volume, 'square')
+
+    if (remaining <= 2) {
+      window.setTimeout(() => tone(frequency * 1.28, 0.065, volume * 0.72, 'triangle'), 90)
+    }
+  }, [tone])
+
   const startMusic = useCallback(() => {
     ensureContext()
     if (musicTimerRef.current) return
@@ -93,8 +111,8 @@ function useArcadeAudio() {
   useEffect(() => () => stopMusic(), [stopMusic])
 
   return useMemo(
-    () => ({ ensureContext, collect, miss, countdown, startMusic, stopMusic }),
-    [ensureContext, collect, miss, countdown, startMusic, stopMusic],
+    () => ({ ensureContext, collect, miss, countdown, finalWarning, startMusic, stopMusic }),
+    [ensureContext, collect, miss, countdown, finalWarning, startMusic, stopMusic],
   )
 }
 
@@ -245,6 +263,10 @@ export default function GameExperience({ onReset }) {
       if (remaining !== lastDisplayedSecondRef.current) {
         lastDisplayedSecondRef.current = remaining
         setTimeLeft(remaining)
+
+        if (remaining <= FINAL_WARNING_SECONDS) {
+          audio.finalWarning(remaining)
+        }
       }
 
       if (elapsedSeconds >= GAME_SECONDS) {
