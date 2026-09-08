@@ -2,9 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { primeAudio } from '../utils/audio'
 
 const APPS = [
+  { id: 'appstore', label: 'App Store', icon: '/app-icons/appstore.svg' },
+  { id: 'podcasts', label: 'Podcast', icon: '/app-icons/podcasts.jpg' },
+  { id: 'settings', label: 'Impostazioni', icon: '/app-icons/settings.svg' },
+  { id: 'files', label: 'File', icon: '/app-icons/files.jpg' },
+  { id: 'whatsapp', label: 'WhatsApp', icon: '/app-icons/whatsapp.jpg' },
+  { id: 'instagram', label: 'Instagram', icon: '/app-icons/instagram.jpg' },
+  { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
+  { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
+  { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
+  { id: 'copilot365', label: 'Microsoft 365', icon: '/app-icons/copilot365.jpg' },
   { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
   { id: 'camera', label: 'Fotocamera', icon: '/app-icons/camera.jpg' },
-  { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
   { id: 'weather', label: 'Meteo', icon: '/app-icons/weather.jpg' },
   { id: 'photos', label: 'Foto', icon: '/app-icons/photos.jpg' },
   { id: 'notes', label: 'Note', icon: '/app-icons/notes.jpg' },
