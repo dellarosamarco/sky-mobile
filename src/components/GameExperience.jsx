@@ -60,18 +60,18 @@ function useArcadeAudio() {
 
   const finalWarning = useCallback((remaining) => {
     if (remaining <= 0) {
-      tone(220, 0.34, 0.1, 'sawtooth')
-      window.setTimeout(() => tone(110, 0.42, 0.08, 'square'), 85)
+      tone(220, 0.34, 0.12, 'sawtooth')
+      window.setTimeout(() => tone(110, 0.42, 0.095, 'square'), 85)
       return
     }
 
     const progress = FINAL_WARNING_SECONDS - remaining
     const frequency = 720 + progress * 115
-    const volume = 0.075 + progress * 0.008
+    const volume = 0.09 + progress * 0.009
     tone(frequency, 0.1, volume, 'square')
 
     if (remaining <= 2) {
-      window.setTimeout(() => tone(frequency * 1.28, 0.065, volume * 0.72, 'triangle'), 90)
+      window.setTimeout(() => tone(frequency * 1.28, 0.065, volume * 0.78, 'triangle'), 90)
     }
   }, [tone])
 
