@@ -5,6 +5,11 @@
   width: clamp(63px, calc(15vw - 5px), 99px) !important;
 }
 
+/* Give the Sky wordmark a little more breathing room from the top edge. */
+.sky-home-icon .sky-wordmark {
+  transform: translateY(3px);
+}
+
 /* Make the Sky Mobile app discoverable without looking like an ad or a CTA button. */
 .sky-app-launcher .sky-home-icon {
   animation: sky-app-attention 2.6s ease-in-out infinite;
@@ -23,11 +28,11 @@
 
   50% {
     transform: translateY(-3px) scale(1.025);
-    filter: drop-shadow(0 0 9px rgba(77, 218, 255, .42));
+    filter: drop-shadow(0 0 12px rgba(77, 218, 255, .52));
     box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,.24),
+      inset 0 0 0 1px rgba(255,255,255,.26),
       0 7px 16px rgba(0,0,0,.18),
-      0 0 18px rgba(78, 211, 255, .32);
+      0 0 24px rgba(78, 211, 255, .4);
   }
 }
 
@@ -38,6 +43,10 @@
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .sky-home-icon .sky-wordmark {
+    transform: translateY(6px);
+  }
+
   @keyframes sky-app-attention {
     0%, 100% {
       transform: translateY(0) scale(1);
@@ -50,11 +59,11 @@
 
     50% {
       transform: translateY(-7px) scale(1.025);
-      filter: drop-shadow(0 0 18px rgba(77, 218, 255, .42));
+      filter: drop-shadow(0 0 24px rgba(77, 218, 255, .52));
       box-shadow:
-        inset 0 0 0 2px rgba(255,255,255,.24),
+        inset 0 0 0 2px rgba(255,255,255,.26),
         0 20px 40px rgba(0,0,0,.2),
-        0 0 38px rgba(78, 211, 255, .3);
+        0 0 48px rgba(78, 211, 255, .38);
     }
   }
 }
@@ -62,6 +71,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sky-app-launcher .sky-home-icon {
     animation: none;
-    filter: drop-shadow(0 0 8px rgba(77, 218, 255, .32));
+    filter: drop-shadow(0 0 11px rgba(77, 218, 255, .42));
   }
 }
