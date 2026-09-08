@@ -12,6 +12,7 @@ import './official-icons.css'
 import './viewport-fix.css'
 import './iphone-statusbar.css'
 import './home-grid-density.css'
+import './sim-artwork.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
