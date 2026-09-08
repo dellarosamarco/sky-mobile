@@ -1,76 +1,102 @@
-/* Dynamic Sky background shared by the lock screen and SIM Catch experience. */
+/* Exact Sky event artwork as the shared background. Animation comes from glow layers,
+   not from replacing/recreating the supplied image. */
 
 :root {
   --sky-event-bg: url('/backgrounds/sky-dynamic-bg.jpg');
 }
 
-/* iOS-style lock screen: soft blur, depth and very slow breathing motion. */
+/* ---------- Lock screen ---------- */
 .ios-wallpaper {
-  inset: -10% !important;
+  inset: -7% !important;
+  overflow: hidden;
   background: var(--sky-event-bg) center / cover no-repeat !important;
-  filter: blur(12px) saturate(1.12) brightness(.82) !important;
-  transform: scale(1.13) translate3d(-.8%, -.5%, 0);
-  transform-origin: center;
-  animation: sky-lock-bg-drift 15s ease-in-out infinite alternate;
+  filter: none !important;
+  transform: scale(1.08);
+  animation: sky-base-breathe 18s ease-in-out infinite alternate;
   will-change: transform;
 }
 
-.ios-wallpaper::before,
+/* Animated light orbs over the exact artwork. */
+.ios-wallpaper::before {
+  content: '' !important;
+  position: absolute;
+  inset: -14%;
+  width: auto !important;
+  aspect-ratio: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255, 188, 55, .38) 0 8%, transparent 27%),
+    radial-gradient(circle at 80% 26%, rgba(255, 45, 176, .34) 0 9%, transparent 28%),
+    radial-gradient(circle at 48% 77%, rgba(0, 194, 255, .38) 0 11%, transparent 31%),
+    radial-gradient(circle at 86% 76%, rgba(116, 82, 255, .32) 0 9%, transparent 27%);
+  filter: blur(46px) saturate(1.2) !important;
+  opacity: .92 !important;
+  transform: none !important;
+  animation: sky-glow-drift 13s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+/* Blur sits ABOVE both the photo and the animated glow balls, iOS style. */
 .ios-wallpaper::after {
-  content: none !important;
+  content: '' !important;
+  position: absolute;
+  inset: 0;
+  width: auto !important;
+  aspect-ratio: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(9, 12, 24, .08) !important;
+  backdrop-filter: blur(15px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(1.08) !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: none;
 }
 
 .ios-overlay {
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255,255,255,.08), transparent 35%),
-    linear-gradient(to bottom, rgba(5,8,18,.10), rgba(5,8,18,.24) 58%, rgba(2,5,14,.34)) !important;
-  backdrop-filter: blur(7px) saturate(1.04) !important;
-  -webkit-backdrop-filter: blur(7px) saturate(1.04) !important;
+  background: linear-gradient(to bottom, rgba(3, 6, 16, .06), rgba(3, 6, 16, .20) 62%, rgba(2, 4, 12, .30)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-@keyframes sky-lock-bg-drift {
-  0% {
-    transform: scale(1.13) translate3d(-.8%, -.5%, 0) rotate(-.15deg);
-  }
-  50% {
-    transform: scale(1.17) translate3d(.7%, -.3%, 0) rotate(.12deg);
-  }
-  100% {
-    transform: scale(1.14) translate3d(-.25%, .75%, 0) rotate(-.08deg);
-  }
-}
-
-/* Gameplay: same visual identity, but darker and calmer so SIMs remain readable. */
+/* ---------- Gameplay ---------- */
 .game-field-bg {
-  inset: -9% !important;
+  inset: -7% !important;
+  overflow: hidden;
   background: var(--sky-event-bg) center / cover no-repeat !important;
-  filter: blur(9px) saturate(1.08) brightness(.58) !important;
-  transform: scale(1.12) translate3d(-.4%, -.25%, 0);
-  transform-origin: center;
-  animation: sky-game-bg-drift 21s ease-in-out infinite alternate;
+  filter: none !important;
+  transform: scale(1.075);
+  animation: sky-game-base-breathe 24s ease-in-out infinite alternate;
   will-change: transform;
 }
 
-.game-field-bg::after {
-  inset: -2% !important;
+.game-field-bg::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
   background:
-    radial-gradient(circle at 50% 55%, rgba(15,108,210,.08), transparent 42%),
-    linear-gradient(to bottom, rgba(1,6,20,.20), rgba(2,8,24,.34) 55%, rgba(1,4,14,.48)) !important;
+    radial-gradient(circle at 17% 25%, rgba(255, 171, 36, .25) 0 8%, transparent 28%),
+    radial-gradient(circle at 81% 28%, rgba(255, 34, 173, .24) 0 9%, transparent 29%),
+    radial-gradient(circle at 50% 76%, rgba(0, 190, 255, .29) 0 11%, transparent 31%),
+    radial-gradient(circle at 84% 78%, rgba(111, 79, 255, .22) 0 9%, transparent 27%);
+  filter: blur(52px) saturate(1.15);
+  animation: sky-game-glow-drift 18s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
-@keyframes sky-game-bg-drift {
-  0% {
-    transform: scale(1.12) translate3d(-.4%, -.25%, 0);
-  }
-  50% {
-    transform: scale(1.145) translate3d(.45%, -.2%, 0);
-  }
-  100% {
-    transform: scale(1.125) translate3d(-.15%, .45%, 0);
-  }
+.game-field-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0 !important;
+  background: linear-gradient(to bottom, rgba(2, 6, 18, .16), rgba(2, 8, 24, .25) 58%, rgba(1, 4, 14, .38)) !important;
+  backdrop-filter: blur(12px) saturate(1.04);
+  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+  pointer-events: none;
 }
 
-/* Keep intro, countdown and results visually tied to the game without blurring UI content. */
+/* Intro / countdown / result screens use the same exact artwork and the same layering idea. */
 .game-intro,
 .game-countdown,
 .game-results {
@@ -83,13 +109,11 @@
 .game-results::before {
   content: '';
   position: absolute;
-  inset: -10%;
-  z-index: -2;
+  inset: -8%;
+  z-index: -3;
   background: var(--sky-event-bg) center / cover no-repeat;
-  filter: blur(11px) saturate(1.1) brightness(.62);
-  transform: scale(1.14);
-  animation: sky-stage-bg-drift 18s ease-in-out infinite alternate;
-  will-change: transform;
+  transform: scale(1.08);
+  animation: sky-stage-breathe 20s ease-in-out infinite alternate;
 }
 
 .game-intro::after,
@@ -98,38 +122,73 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 35%, rgba(255,255,255,.06), transparent 34%),
-    linear-gradient(to bottom, rgba(2,7,22,.14), rgba(2,7,22,.38));
+    radial-gradient(circle at 18% 25%, rgba(255, 180, 42, .22) 0 9%, transparent 29%),
+    radial-gradient(circle at 80% 27%, rgba(255, 40, 177, .22) 0 10%, transparent 30%),
+    radial-gradient(circle at 50% 76%, rgba(0, 191, 255, .25) 0 12%, transparent 32%),
+    linear-gradient(to bottom, rgba(2, 7, 22, .14), rgba(2, 7, 22, .34));
+  backdrop-filter: blur(13px) saturate(1.05);
+  -webkit-backdrop-filter: blur(13px) saturate(1.05);
+  animation: sky-stage-glow 16s ease-in-out infinite alternate;
 }
 
-@keyframes sky-stage-bg-drift {
-  from {
-    transform: scale(1.14) translate3d(-.4%, -.35%, 0);
-  }
-  to {
-    transform: scale(1.17) translate3d(.45%, .4%, 0);
-  }
+@keyframes sky-base-breathe {
+  from { transform: scale(1.08) translate3d(-.35%, -.25%, 0); }
+  to   { transform: scale(1.115) translate3d(.35%, .45%, 0); }
+}
+
+@keyframes sky-game-base-breathe {
+  from { transform: scale(1.075) translate3d(-.2%, -.2%, 0); }
+  to   { transform: scale(1.095) translate3d(.25%, .3%, 0); }
+}
+
+@keyframes sky-stage-breathe {
+  from { transform: scale(1.08) translate3d(-.25%, -.2%, 0); }
+  to   { transform: scale(1.105) translate3d(.3%, .35%, 0); }
+}
+
+@keyframes sky-glow-drift {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+  50%  { transform: translate3d(2%, 1.5%, 0) scale(1.08); }
+  100% { transform: translate3d(-1%, 3%, 0) scale(1.03); }
+}
+
+@keyframes sky-game-glow-drift {
+  0%   { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+  50%  { transform: translate3d(1.7%, 1%, 0) scale(1.05); }
+  100% { transform: translate3d(-.8%, 2.2%, 0) scale(1.02); }
+}
+
+@keyframes sky-stage-glow {
+  from { background-position: 0 0; opacity: .9; }
+  to   { background-position: 12px -10px; opacity: 1; }
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
-  .ios-wallpaper {
-    filter: blur(14px) saturate(1.12) brightness(.82) !important;
+  .ios-wallpaper::after {
+    backdrop-filter: blur(20px) saturate(1.08) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.08) !important;
   }
 
-  .game-field-bg {
-    filter: blur(10px) saturate(1.08) brightness(.58) !important;
+  .game-field-bg::after {
+    backdrop-filter: blur(15px) saturate(1.04);
+    -webkit-backdrop-filter: blur(15px) saturate(1.04);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ios-wallpaper,
+  .ios-wallpaper::before,
   .game-field-bg,
+  .game-field-bg::before,
   .game-intro::before,
   .game-countdown::before,
-  .game-results::before {
+  .game-results::before,
+  .game-intro::after,
+  .game-countdown::after,
+  .game-results::after {
     animation: none !important;
   }
 }
