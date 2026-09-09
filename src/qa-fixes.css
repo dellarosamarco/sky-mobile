@@ -20,42 +20,39 @@
   will-change: left;
 }
 
-/* Use a universally recognizable handset glyph rather than placeholder symbols. */
+/* Use a deterministic vector handset instead of a rotated font glyph.
+   This avoids the old double-rotation that made the call icon look sideways. */
 .call-action > span,
 .call-controls .hangup {
   font-size: 0;
+  transform: none !important;
 }
 
 .call-action > span::before,
 .call-controls .hangup::before {
-  content: "☎";
+  content: "";
   display: block;
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(30px, 7vw, 48px);
-  font-weight: 400;
-  line-height: 1;
+  width: clamp(30px, 7vw, 48px);
+  aspect-ratio: 1;
+  background: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.8a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.28-1.28a2 2 0 0 1 2.11-.45c.9.33 1.84.56 2.8.69A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.8a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.28-1.28a2 2 0 0 1 2.11-.45c.9.33 1.84.56 2.8.69A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: none !important;
 }
 
-.call-action.accept > span {
-  transform: none;
-}
-
-.call-action.accept > span::before {
-  transform: rotate(-18deg);
-}
-
+.call-action.accept > span,
+.call-action.accept > span::before,
 .call-action.decline > span::before,
 .call-controls .hangup::before {
-  transform: rotate(135deg);
+  transform: none !important;
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
   .call-action > span::before {
-    font-size: clamp(72px, 5.2vw, 112px);
+    width: clamp(72px, 5.2vw, 112px);
   }
 
   .call-controls .hangup::before {
-    font-size: clamp(42px, 3.2vw, 68px);
+    width: clamp(42px, 3.2vw, 68px);
   }
 }
