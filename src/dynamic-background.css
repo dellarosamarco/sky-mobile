@@ -1,6 +1,6 @@
 /* Exact Sky event artwork as the shared background.
-   The supplied image remains the base layer; motion comes from visible image drift
-   plus blurred glowing balls moving above it. */
+   The full supplied image always remains visible. A second copy of the same image
+   fills the extra portrait area behind it, while glowing balls provide motion. */
 
 :root {
   --sky-event-bg: url('/backgrounds/sky-dynamic-bg.jpg');
@@ -8,16 +8,17 @@
 
 /* ---------- Lock screen ---------- */
 .ios-wallpaper {
-  inset: -14% !important;
+  inset: 0 !important;
   overflow: hidden;
-  background-image: var(--sky-event-bg) !important;
-  background-repeat: no-repeat !important;
-  background-size: 134% 134% !important;
-  background-position: 40% 42% !important;
+  background-image: var(--sky-event-bg), var(--sky-event-bg) !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-size: contain, cover !important;
+  background-position: center, center !important;
+  background-color: #111d34 !important;
   filter: none !important;
-  transform-origin: center;
-  animation: sky-lock-photo-drift 5.6s ease-in-out infinite alternate !important;
-  will-change: transform, background-position;
+  transform: none !important;
+  animation: sky-lock-fill-drift 7s ease-in-out infinite alternate !important;
+  will-change: background-position;
 }
 
 /* Bright, visibly moving light orbs over the exact artwork. */
@@ -42,7 +43,7 @@
   pointer-events: none;
 }
 
-/* Blur sits ABOVE both the photo and animated glowing balls, iOS style. */
+/* Blur sits above both the full artwork and the moving glow balls, iOS style. */
 .ios-wallpaper::after {
   content: '' !important;
   position: absolute;
@@ -68,16 +69,17 @@
 
 /* ---------- Gameplay ---------- */
 .game-field-bg {
-  inset: -13% !important;
+  inset: 0 !important;
   overflow: hidden;
-  background-image: var(--sky-event-bg) !important;
-  background-repeat: no-repeat !important;
-  background-size: 130% 130% !important;
-  background-position: 42% 44% !important;
+  background-image: var(--sky-event-bg), var(--sky-event-bg) !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-size: contain, cover !important;
+  background-position: center, center !important;
+  background-color: #111d34 !important;
   filter: none !important;
-  transform-origin: center;
-  animation: sky-game-photo-drift 7.4s ease-in-out infinite alternate !important;
-  will-change: transform, background-position;
+  transform: none !important;
+  animation: sky-game-fill-drift 9s ease-in-out infinite alternate !important;
+  will-change: background-position;
 }
 
 .game-field-bg::before {
@@ -107,7 +109,7 @@
   pointer-events: none;
 }
 
-/* Intro / countdown / result screens use the exact same artwork. */
+/* Intro / countdown / result screens: same full-image treatment. */
 .game-intro,
 .game-countdown,
 .game-results {
@@ -120,15 +122,16 @@
 .game-results::before {
   content: '';
   position: absolute;
-  inset: -13%;
+  inset: 0;
   z-index: -3;
-  background-image: var(--sky-event-bg);
-  background-repeat: no-repeat;
-  background-size: 132% 132%;
-  background-position: 41% 43%;
-  transform-origin: center;
-  animation: sky-stage-photo-drift 6.8s ease-in-out infinite alternate !important;
-  will-change: transform, background-position;
+  background-image: var(--sky-event-bg), var(--sky-event-bg);
+  background-repeat: no-repeat, no-repeat;
+  background-size: contain, cover;
+  background-position: center, center;
+  background-color: #111d34;
+  transform: none;
+  animation: sky-stage-fill-drift 8s ease-in-out infinite alternate !important;
+  will-change: background-position;
 }
 
 .game-intro::after,
@@ -151,49 +154,23 @@
   will-change: transform, opacity;
 }
 
-@keyframes sky-lock-photo-drift {
-  0% {
-    background-position: 35% 37%;
-    transform: scale(1.02) translate3d(-2.8%, -1.8%, 0) rotate(-.25deg);
-  }
-  50% {
-    background-position: 61% 48%;
-    transform: scale(1.12) translate3d(2.7%, -.3%, 0) rotate(.25deg);
-  }
-  100% {
-    background-position: 44% 65%;
-    transform: scale(1.055) translate3d(-1.0%, 2.8%, 0) rotate(-.12deg);
-  }
+/* The foreground copy stays centered and fully visible. Only the rear cover copy drifts. */
+@keyframes sky-lock-fill-drift {
+  0%   { background-position: center, 44% 44%; }
+  50%  { background-position: center, 55% 50%; }
+  100% { background-position: center, 48% 58%; }
 }
 
-@keyframes sky-game-photo-drift {
-  0% {
-    background-position: 38% 40%;
-    transform: scale(1.02) translate3d(-1.8%, -1.2%, 0);
-  }
-  50% {
-    background-position: 58% 49%;
-    transform: scale(1.09) translate3d(1.8%, -.2%, 0);
-  }
-  100% {
-    background-position: 45% 62%;
-    transform: scale(1.045) translate3d(-.7%, 2.0%, 0);
-  }
+@keyframes sky-game-fill-drift {
+  0%   { background-position: center, 45% 45%; }
+  50%  { background-position: center, 54% 50%; }
+  100% { background-position: center, 48% 56%; }
 }
 
-@keyframes sky-stage-photo-drift {
-  0% {
-    background-position: 37% 39%;
-    transform: scale(1.02) translate3d(-2%, -1.3%, 0);
-  }
-  50% {
-    background-position: 59% 49%;
-    transform: scale(1.095) translate3d(2%, -.2%, 0);
-  }
-  100% {
-    background-position: 45% 63%;
-    transform: scale(1.05) translate3d(-.8%, 2.2%, 0);
-  }
+@keyframes sky-stage-fill-drift {
+  0%   { background-position: center, 44% 44%; }
+  50%  { background-position: center, 55% 50%; }
+  100% { background-position: center, 48% 57%; }
 }
 
 @keyframes sky-lock-orbs {
@@ -236,14 +213,14 @@
 
 /* Keep the branded motion alive on the kiosk even if reduced motion is enabled. */
 @media (prefers-reduced-motion: reduce) {
-  .ios-wallpaper { animation-duration: 6.5s !important; }
-  .ios-wallpaper::before { animation-duration: 5.2s !important; }
-  .game-field-bg { animation-duration: 8.5s !important; }
-  .game-field-bg::before { animation-duration: 6.8s !important; }
+  .ios-wallpaper { animation-duration: 8s !important; }
+  .ios-wallpaper::before { animation-duration: 5.5s !important; }
+  .game-field-bg { animation-duration: 10s !important; }
+  .game-field-bg::before { animation-duration: 7s !important; }
   .game-intro::before,
   .game-countdown::before,
-  .game-results::before { animation-duration: 8s !important; }
+  .game-results::before { animation-duration: 9s !important; }
   .game-intro::after,
   .game-countdown::after,
-  .game-results::after { animation-duration: 6.2s !important; }
+  .game-results::after { animation-duration: 6.5s !important; }
 }
