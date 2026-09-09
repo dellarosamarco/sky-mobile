@@ -174,21 +174,21 @@
 }
 
 @keyframes sky-lock-orbs {
-  0%   { transform: translate3d(-17%, -11%, 0) scale(.82) rotate(-4deg); opacity: .72; }
-  50%  { transform: translate3d(16%, 9%, 0) scale(1.32) rotate(4deg); opacity: 1; }
-  100% { transform: translate3d(-7%, 21%, 0) scale(1.06) rotate(-2deg); opacity: .86; }
+  0%   { transform: translate3d(-25%, -17%, 0) scale(.78) rotate(-6deg); opacity: .70; }
+  50%  { transform: translate3d(25%, 15%, 0) scale(1.40) rotate(6deg); opacity: 1; }
+  100% { transform: translate3d(-11%, 31%, 0) scale(1.10) rotate(-3deg); opacity: .88; }
 }
 
 @keyframes sky-game-orbs {
-  0%   { transform: translate3d(-13%, -8%, 0) scale(.86); opacity: .66; }
-  50%  { transform: translate3d(13%, 7%, 0) scale(1.25); opacity: .98; }
-  100% { transform: translate3d(-6%, 17%, 0) scale(1.04); opacity: .80; }
+  0%   { transform: translate3d(-19%, -12%, 0) scale(.82); opacity: .64; }
+  50%  { transform: translate3d(19%, 11%, 0) scale(1.31); opacity: .99; }
+  100% { transform: translate3d(-9%, 25%, 0) scale(1.08); opacity: .82; }
 }
 
 @keyframes sky-stage-orbs {
-  0%   { transform: translate3d(-14%, -9%, 0) scale(.86); opacity: .68; }
-  50%  { transform: translate3d(14%, 8%, 0) scale(1.27); opacity: 1; }
-  100% { transform: translate3d(-6%, 18%, 0) scale(1.04); opacity: .82; }
+  0%   { transform: translate3d(-21%, -13%, 0) scale(.82); opacity: .66; }
+  50%  { transform: translate3d(21%, 12%, 0) scale(1.34); opacity: 1; }
+  100% { transform: translate3d(-9%, 27%, 0) scale(1.08); opacity: .84; }
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
