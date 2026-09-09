@@ -1,6 +1,6 @@
 /* Exact Sky event artwork as the shared background.
-   The supplied image remains the base layer; motion comes from the image breathing
-   and from blurred glowing balls moving above it. */
+   The supplied image remains the base layer; motion comes from visible image drift
+   plus blurred glowing balls moving above it. */
 
 :root {
   --sky-event-bg: url('/backgrounds/sky-dynamic-bg.jpg');
@@ -8,37 +8,41 @@
 
 /* ---------- Lock screen ---------- */
 .ios-wallpaper {
-  inset: -10% !important;
+  inset: -12% !important;
   overflow: hidden;
-  background: var(--sky-event-bg) center / cover no-repeat !important;
+  background-image: var(--sky-event-bg) !important;
+  background-repeat: no-repeat !important;
+  background-size: 128% 128% !important;
+  background-position: 42% 44% !important;
   filter: none !important;
   transform-origin: center;
-  animation: sky-base-breathe 10s ease-in-out infinite alternate;
-  will-change: transform;
+  animation: sky-lock-photo-drift 7s ease-in-out infinite alternate !important;
+  will-change: transform, background-position;
 }
 
-/* Large animated light orbs over the exact artwork. */
+/* Bright, visibly moving light orbs over the exact artwork. */
 .ios-wallpaper::before {
   content: '' !important;
   position: absolute;
-  inset: -22%;
+  inset: -28%;
   width: auto !important;
   aspect-ratio: auto !important;
   border: 0 !important;
   border-radius: 0 !important;
   background:
-    radial-gradient(circle at 14% 20%, rgba(255, 205, 57, .56) 0 10%, transparent 30%),
-    radial-gradient(circle at 83% 22%, rgba(255, 34, 184, .50) 0 11%, transparent 31%),
-    radial-gradient(circle at 42% 82%, rgba(0, 205, 255, .55) 0 13%, transparent 34%),
-    radial-gradient(circle at 88% 76%, rgba(123, 77, 255, .48) 0 11%, transparent 31%);
-  filter: blur(58px) saturate(1.28) !important;
-  opacity: .96 !important;
-  animation: sky-glow-drift 7.5s ease-in-out infinite alternate;
+    radial-gradient(circle at 18% 24%, rgba(255,255,255,.48) 0 7%, rgba(255,211,75,.34) 12%, transparent 28%),
+    radial-gradient(circle at 78% 23%, rgba(255,97,221,.55) 0 9%, transparent 29%),
+    radial-gradient(circle at 42% 77%, rgba(72,224,255,.58) 0 11%, transparent 32%),
+    radial-gradient(circle at 84% 74%, rgba(155,116,255,.52) 0 9%, transparent 29%);
+  filter: blur(48px) saturate(1.35) !important;
+  mix-blend-mode: screen;
+  opacity: .98 !important;
+  animation: sky-lock-orbs 5.2s ease-in-out infinite alternate !important;
   will-change: transform, opacity;
   pointer-events: none;
 }
 
-/* Blur sits ABOVE both the photo and the animated glow balls, iOS style. */
+/* Blur sits ABOVE both the photo and animated glowing balls, iOS style. */
 .ios-wallpaper::after {
   content: '' !important;
   position: absolute;
@@ -47,9 +51,9 @@
   aspect-ratio: auto !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: rgba(9, 12, 24, .06) !important;
-  backdrop-filter: blur(15px) saturate(1.08) !important;
-  -webkit-backdrop-filter: blur(15px) saturate(1.08) !important;
+  background: rgba(9,12,24,.04) !important;
+  backdrop-filter: blur(13px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(13px) saturate(1.08) !important;
   filter: none !important;
   opacity: 1 !important;
   transform: none !important;
@@ -57,33 +61,37 @@
 }
 
 .ios-overlay {
-  background: linear-gradient(to bottom, rgba(3, 6, 16, .04), rgba(3, 6, 16, .16) 62%, rgba(2, 4, 12, .26)) !important;
+  background: linear-gradient(to bottom, rgba(3,6,16,.03), rgba(3,6,16,.13) 62%, rgba(2,4,12,.23)) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
 /* ---------- Gameplay ---------- */
 .game-field-bg {
-  inset: -10% !important;
+  inset: -12% !important;
   overflow: hidden;
-  background: var(--sky-event-bg) center / cover no-repeat !important;
+  background-image: var(--sky-event-bg) !important;
+  background-repeat: no-repeat !important;
+  background-size: 124% 124% !important;
+  background-position: 44% 46% !important;
   filter: none !important;
   transform-origin: center;
-  animation: sky-game-base-breathe 14s ease-in-out infinite alternate;
-  will-change: transform;
+  animation: sky-game-photo-drift 9s ease-in-out infinite alternate !important;
+  will-change: transform, background-position;
 }
 
 .game-field-bg::before {
   content: '';
   position: absolute;
-  inset: -22%;
+  inset: -28%;
   background:
-    radial-gradient(circle at 15% 22%, rgba(255, 188, 35, .37) 0 10%, transparent 31%),
-    radial-gradient(circle at 82% 24%, rgba(255, 29, 176, .36) 0 11%, transparent 32%),
-    radial-gradient(circle at 45% 80%, rgba(0, 196, 255, .40) 0 13%, transparent 34%),
-    radial-gradient(circle at 87% 77%, rgba(116, 75, 255, .34) 0 11%, transparent 31%);
-  filter: blur(62px) saturate(1.2);
-  animation: sky-game-glow-drift 10s ease-in-out infinite alternate;
+    radial-gradient(circle at 17% 23%, rgba(255,255,255,.32) 0 7%, rgba(255,184,48,.27) 12%, transparent 29%),
+    radial-gradient(circle at 80% 25%, rgba(255,70,203,.39) 0 9%, transparent 30%),
+    radial-gradient(circle at 44% 78%, rgba(52,214,255,.43) 0 11%, transparent 32%),
+    radial-gradient(circle at 86% 76%, rgba(145,109,255,.38) 0 9%, transparent 29%);
+  filter: blur(54px) saturate(1.25);
+  mix-blend-mode: screen;
+  animation: sky-game-orbs 7s ease-in-out infinite alternate !important;
   will-change: transform, opacity;
   pointer-events: none;
 }
@@ -92,9 +100,9 @@
   content: '';
   position: absolute;
   inset: 0 !important;
-  background: linear-gradient(to bottom, rgba(2, 6, 18, .12), rgba(2, 8, 24, .21) 58%, rgba(1, 4, 14, .34)) !important;
-  backdrop-filter: blur(12px) saturate(1.04);
-  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+  background: linear-gradient(to bottom, rgba(2,6,18,.11), rgba(2,8,24,.19) 58%, rgba(1,4,14,.31)) !important;
+  backdrop-filter: blur(10px) saturate(1.04);
+  -webkit-backdrop-filter: blur(10px) saturate(1.04);
   pointer-events: none;
 }
 
@@ -113,10 +121,13 @@
   position: absolute;
   inset: -12%;
   z-index: -3;
-  background: var(--sky-event-bg) center / cover no-repeat;
+  background-image: var(--sky-event-bg);
+  background-repeat: no-repeat;
+  background-size: 126% 126%;
+  background-position: 43% 45%;
   transform-origin: center;
-  animation: sky-stage-breathe 11s ease-in-out infinite alternate;
-  will-change: transform;
+  animation: sky-stage-photo-drift 8s ease-in-out infinite alternate !important;
+  will-change: transform, background-position;
 }
 
 .game-intro::after,
@@ -124,93 +135,114 @@
 .game-results::after {
   content: '';
   position: absolute;
-  inset: -18%;
+  inset: -22%;
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 15% 22%, rgba(255, 196, 41, .38) 0 10%, transparent 31%),
-    radial-gradient(circle at 83% 24%, rgba(255, 35, 180, .38) 0 11%, transparent 32%),
-    radial-gradient(circle at 45% 80%, rgba(0, 199, 255, .42) 0 13%, transparent 34%),
-    radial-gradient(circle at 88% 78%, rgba(119, 77, 255, .34) 0 11%, transparent 31%),
-    linear-gradient(to bottom, rgba(2, 7, 22, .08), rgba(2, 7, 22, .25));
-  backdrop-filter: blur(13px) saturate(1.06);
-  -webkit-backdrop-filter: blur(13px) saturate(1.06);
-  animation: sky-stage-glow-drift 9s ease-in-out infinite alternate;
+    radial-gradient(circle at 17% 23%, rgba(255,255,255,.30) 0 7%, rgba(255,190,48,.25) 12%, transparent 29%),
+    radial-gradient(circle at 81% 25%, rgba(255,72,205,.36) 0 9%, transparent 30%),
+    radial-gradient(circle at 45% 79%, rgba(49,218,255,.40) 0 11%, transparent 32%),
+    radial-gradient(circle at 87% 77%, rgba(145,108,255,.35) 0 9%, transparent 29%),
+    linear-gradient(to bottom, rgba(2,7,22,.06), rgba(2,7,22,.22));
+  filter: blur(11px);
+  mix-blend-mode: screen;
+  animation: sky-stage-orbs 6.4s ease-in-out infinite alternate !important;
   will-change: transform, opacity;
 }
 
-@keyframes sky-base-breathe {
-  0%   { transform: scale(1.09) translate3d(-1.2%, -.8%, 0); }
-  50%  { transform: scale(1.145) translate3d(1.0%, -.3%, 0); }
-  100% { transform: scale(1.11) translate3d(-.5%, 1.1%, 0); }
+@keyframes sky-lock-photo-drift {
+  0% {
+    background-position: 40% 42%;
+    transform: scale(1.03) translate3d(-1.5%, -1%, 0);
+  }
+  50% {
+    background-position: 54% 48%;
+    transform: scale(1.09) translate3d(1.5%, -.2%, 0);
+  }
+  100% {
+    background-position: 46% 58%;
+    transform: scale(1.05) translate3d(-.5%, 1.6%, 0);
+  }
 }
 
-@keyframes sky-game-base-breathe {
-  0%   { transform: scale(1.085) translate3d(-.7%, -.5%, 0); }
-  50%  { transform: scale(1.12) translate3d(.7%, -.2%, 0); }
-  100% { transform: scale(1.095) translate3d(-.3%, .75%, 0); }
+@keyframes sky-game-photo-drift {
+  0% {
+    background-position: 42% 44%;
+    transform: scale(1.025) translate3d(-1%, -.7%, 0);
+  }
+  50% {
+    background-position: 52% 49%;
+    transform: scale(1.065) translate3d(1%, -.1%, 0);
+  }
+  100% {
+    background-position: 46% 56%;
+    transform: scale(1.04) translate3d(-.35%, 1.1%, 0);
+  }
 }
 
-@keyframes sky-stage-breathe {
-  0%   { transform: scale(1.09) translate3d(-.8%, -.6%, 0); }
-  50%  { transform: scale(1.13) translate3d(.8%, -.15%, 0); }
-  100% { transform: scale(1.105) translate3d(-.35%, .85%, 0); }
+@keyframes sky-stage-photo-drift {
+  0% {
+    background-position: 41% 43%;
+    transform: scale(1.025) translate3d(-1.1%, -.7%, 0);
+  }
+  50% {
+    background-position: 53% 49%;
+    transform: scale(1.07) translate3d(1.1%, -.1%, 0);
+  }
+  100% {
+    background-position: 46% 57%;
+    transform: scale(1.04) translate3d(-.4%, 1.2%, 0);
+  }
 }
 
-@keyframes sky-glow-drift {
-  0%   { transform: translate3d(-8%, -5%, 0) scale(.94) rotate(-2deg); opacity: .78; }
-  50%  { transform: translate3d(7%, 4%, 0) scale(1.14) rotate(2deg); opacity: 1; }
-  100% { transform: translate3d(-3%, 10%, 0) scale(1.02) rotate(-1deg); opacity: .88; }
+@keyframes sky-lock-orbs {
+  0%   { transform: translate3d(-12%, -8%, 0) scale(.88); opacity: .72; }
+  50%  { transform: translate3d(11%, 6%, 0) scale(1.20); opacity: 1; }
+  100% { transform: translate3d(-5%, 15%, 0) scale(1.02); opacity: .84; }
 }
 
-@keyframes sky-game-glow-drift {
-  0%   { transform: translate3d(-6%, -4%, 0) scale(.96); opacity: .72; }
-  50%  { transform: translate3d(6%, 3%, 0) scale(1.11); opacity: .95; }
-  100% { transform: translate3d(-2%, 8%, 0) scale(1.03); opacity: .82; }
+@keyframes sky-game-orbs {
+  0%   { transform: translate3d(-9%, -6%, 0) scale(.92); opacity: .64; }
+  50%  { transform: translate3d(9%, 5%, 0) scale(1.16); opacity: .90; }
+  100% { transform: translate3d(-4%, 12%, 0) scale(1.01); opacity: .75; }
 }
 
-@keyframes sky-stage-glow-drift {
-  0%   { transform: translate3d(-7%, -4%, 0) scale(.96); opacity: .76; }
-  50%  { transform: translate3d(6%, 4%, 0) scale(1.12); opacity: .98; }
-  100% { transform: translate3d(-2%, 8%, 0) scale(1.02); opacity: .84; }
+@keyframes sky-stage-orbs {
+  0%   { transform: translate3d(-10%, -6%, 0) scale(.92); opacity: .68; }
+  50%  { transform: translate3d(9%, 6%, 0) scale(1.17); opacity: .94; }
+  100% { transform: translate3d(-4%, 13%, 0) scale(1.01); opacity: .78; }
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
   .ios-wallpaper::before {
-    filter: blur(90px) saturate(1.3) !important;
+    filter: blur(82px) saturate(1.35) !important;
   }
 
   .ios-wallpaper::after {
-    backdrop-filter: blur(20px) saturate(1.08) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(1.08) !important;
+    backdrop-filter: blur(18px) saturate(1.08) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(1.08) !important;
   }
 
   .game-field-bg::before {
-    filter: blur(95px) saturate(1.22);
+    filter: blur(88px) saturate(1.25);
   }
 
   .game-field-bg::after {
-    backdrop-filter: blur(15px) saturate(1.04);
-    -webkit-backdrop-filter: blur(15px) saturate(1.04);
+    backdrop-filter: blur(14px) saturate(1.04);
+    -webkit-backdrop-filter: blur(14px) saturate(1.04);
   }
 }
 
-/* On the event kiosk we still keep a small amount of motion even if the OS asks
-   for reduced motion, rather than making the branded background completely static. */
+/* Keep the branded motion alive on the kiosk even if reduced motion is enabled. */
 @media (prefers-reduced-motion: reduce) {
-  .ios-wallpaper,
-  .game-field-bg,
+  .ios-wallpaper { animation-duration: 8s !important; }
+  .ios-wallpaper::before { animation-duration: 6s !important; }
+  .game-field-bg { animation-duration: 10s !important; }
+  .game-field-bg::before { animation-duration: 8s !important; }
   .game-intro::before,
   .game-countdown::before,
-  .game-results::before {
-    animation-duration: 20s !important;
-  }
-
-  .ios-wallpaper::before,
-  .game-field-bg::before,
+  .game-results::before { animation-duration: 9s !important; }
   .game-intro::after,
   .game-countdown::after,
-  .game-results::after {
-    animation-duration: 16s !important;
-  }
+  .game-results::after { animation-duration: 7s !important; }
 }
