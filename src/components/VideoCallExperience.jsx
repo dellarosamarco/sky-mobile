@@ -304,10 +304,6 @@ export default function VideoCallExperience({ onReset }) {
         )}
       </div>
 
-      <div className="call-controls" aria-hidden="true">
-        <span>◉</span><span>♬</span><span className="hangup">☎</span>
-      </div>
-
       {phase === 'question' && (
         <div className="question-overlay">
           <section className="question-card">
