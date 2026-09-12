@@ -15,6 +15,7 @@ import './home-grid-density.css'
 import './sim-artwork.css'
 import './interaction-polish.css'
 import './dynamic-background.css'
+import './sky-rework.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
