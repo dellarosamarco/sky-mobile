@@ -18,9 +18,13 @@ body,
   min-height: 100vh;
 }
 
-/* Lift only the numeric keypad, keeping the lock-screen title and PIN dots in place. */
-.ios-keypad {
+/* Move the whole PIN area together so title, dots and keypad keep their spacing. */
+.ios-passcode-panel {
   transform: translateY(-50px);
+}
+
+.ios-keypad {
+  transform: none;
 }
 
 @supports (height: 100dvh) {
