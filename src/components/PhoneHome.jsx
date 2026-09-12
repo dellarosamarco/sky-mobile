@@ -12,6 +12,7 @@ const APPS = [
   { id: 'spotify', label: 'Spotify', icon: '/app-icons/spotify.jpg' },
   { id: 'facetime', label: 'FaceTime', icon: '/app-icons/facetime.jpg' },
   { id: 'teams', label: 'Teams', icon: '/app-icons/teams.jpg' },
+  { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.jpg' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
   { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
   { id: 'sky', label: 'Sky Mobile' },
