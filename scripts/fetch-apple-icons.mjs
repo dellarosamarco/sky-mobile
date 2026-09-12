@@ -16,6 +16,7 @@ const APPS = [
   ['whatsapp', 310633997],
   ['instagram', 389801252],
   ['spotify', 324684580],
+  ['facetime', 1110145091],
   ['mail', 1108187098],
   ['google', 284815942],
   ['copilot365', 541164041],
