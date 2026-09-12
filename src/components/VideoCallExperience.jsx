@@ -101,10 +101,16 @@ export default function VideoCallExperience({ onReset }) {
   const [videoFailed, setVideoFailed] = useState(false)
   const [cameraState, setCameraState] = useState('idle')
   const [endingCopy, setEndingCopy] = useState('Chiamata terminata')
+  const [slideProgress, setSlideProgress] = useState(0)
   const cameraVideoRef = useRef(null)
   const talentVideoRef = useRef(null)
   const streamRef = useRef(null)
   const fallbackTimerRef = useRef(null)
+  const slideTrackRef = useRef(null)
+  const slideKnobRef = useRef(null)
+  const slidePointerRef = useRef(null)
+  const slideStartXRef = useRef(0)
+  const slideStartProgressRef = useRef(0)
 
   const talent = useMemo(() => nextTalent(), [])
   const question = useMemo(() => randomItem(QUESTIONS), [])
@@ -145,6 +151,10 @@ export default function VideoCallExperience({ onReset }) {
     if (phase !== 'home') return undefined
     const timer = window.setTimeout(() => setPhase('incoming'), 1000)
     return () => window.clearTimeout(timer)
+  }, [phase])
+
+  useEffect(() => {
+    if (phase === 'incoming') setSlideProgress(0)
   }, [phase])
 
   useRingtone(phase === 'incoming')
@@ -188,6 +198,7 @@ export default function VideoCallExperience({ onReset }) {
   }
 
   const acceptCall = async () => {
+    setSlideProgress(1)
     setVideoStage('intro')
     setVideoFailed(false)
     setPhase('call')
@@ -195,6 +206,32 @@ export default function VideoCallExperience({ onReset }) {
     startCamera()
     const player = talentVideoRef.current
     if (player) player.play().catch(() => scheduleFallback('intro'))
+  }
+
+  const onSlidePointerDown = (event) => {
+    if (!slideTrackRef.current || !slideKnobRef.current) return
+    event.preventDefault()
+    slidePointerRef.current = event.pointerId
+    slideStartXRef.current = event.clientX
+    slideStartProgressRef.current = slideProgress
+    slideKnobRef.current.setPointerCapture?.(event.pointerId)
+  }
+
+  const onSlidePointerMove = (event) => {
+    if (slidePointerRef.current !== event.pointerId || !slideTrackRef.current || !slideKnobRef.current) return
+    event.preventDefault()
+    const trackWidth = slideTrackRef.current.getBoundingClientRect().width
+    const knobWidth = slideKnobRef.current.getBoundingClientRect().width
+    const travel = Math.max(1, trackWidth - knobWidth - 12)
+    const next = Math.max(0, Math.min(1, slideStartProgressRef.current + (event.clientX - slideStartXRef.current) / travel))
+    setSlideProgress(next)
+  }
+
+  const finishSlide = (event) => {
+    if (slidePointerRef.current !== event.pointerId) return
+    slidePointerRef.current = null
+    if (slideProgress >= 0.78) acceptCall()
+    else setSlideProgress(0)
   }
 
   const currentVideo = videoStage === 'intro' ? talent.intro : videoStage === 'correct' ? talent.correct : talent.wrong
@@ -226,32 +263,42 @@ export default function VideoCallExperience({ onReset }) {
   if (phase === 'home') return <PhoneHome mode="videocall" />
 
   if (phase === 'incoming') {
-    const banner = (
-      <section className="ios-call-banner" role="dialog" aria-label={`Videochiamata in arrivo da ${talent.name}`}>
-        <div className="ios-call-banner-avatar">{talent.avatar}</div>
-        <div className="ios-call-banner-copy">
+    return (
+      <main className="incoming-call-screen" role="dialog" aria-label={`Videochiamata in arrivo da ${talent.name}`}>
+        <div className="incoming-talent-backdrop" aria-hidden="true">
+          <span>{talent.avatar}</span>
+        </div>
+        <div className="incoming-call-shade" aria-hidden="true" />
+        <div className="incoming-call-copy">
           <small>VIDEOCHIAMATA IN ARRIVO</small>
-          <strong>{talent.name}</strong>
-          <span>Sky Mobile</span>
+          <h1>{talent.name}</h1>
+          <p>Sky Mobile</p>
         </div>
-        <div className="ios-call-banner-actions">
-          <button
-            className="ios-call-banner-button decline"
-            type="button"
-            onClick={() => { setEndingCopy('Chiamata terminata'); setPhase('ended') }}
-            aria-label="Rifiuta chiamata"
-          >×</button>
-          <button
-            className="ios-call-banner-button accept"
-            type="button"
-            onClick={acceptCall}
-            aria-label="Rispondi alla videochiamata"
-          >☎</button>
-        </div>
-      </section>
-    )
 
-    return <PhoneHome mode="videocall" overlay={banner} />
+        <div className="slide-answer-wrap">
+          <p>Scorri per rispondere</p>
+          <div className="slide-answer-track" ref={slideTrackRef}>
+            <div className="slide-answer-fill" style={{ width: `${Math.max(12, slideProgress * 100)}%` }} />
+            <span className="slide-answer-label" style={{ opacity: Math.max(0, 1 - slideProgress * 1.7) }}>scorri per rispondere</span>
+            <button
+              ref={slideKnobRef}
+              className="slide-answer-knob"
+              type="button"
+              aria-label="Trascina per rispondere"
+              onPointerDown={onSlidePointerDown}
+              onPointerMove={onSlidePointerMove}
+              onPointerUp={finishSlide}
+              onPointerCancel={finishSlide}
+              style={{ '--slide-progress': slideProgress }}
+            >
+              <span aria-hidden="true">☎</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="ios-home-indicator" aria-hidden="true" />
+      </main>
+    )
   }
 
   if (phase === 'ended') {
@@ -259,7 +306,7 @@ export default function VideoCallExperience({ onReset }) {
       <main className="call-ended">
         <div className="ended-icon">✓</div>
         <h1>{endingCopy}</h1>
-        <p>Grazie! Continua verso la prossima tappa.</p>
+        <p>Continua verso la prossima tappa.</p>
         <small>La postazione si resetterà automaticamente.</small>
       </main>
     )
