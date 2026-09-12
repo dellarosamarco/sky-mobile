@@ -13,16 +13,18 @@ const APPS = [
   { id: 'facetime', label: 'FaceTime', icon: '/app-icons/facetime.jpg' },
   { id: 'teams', label: 'Teams', icon: '/app-icons/teams.jpg' },
   { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.jpg' },
+  { id: 'mysky', label: 'My Sky', icon: '/app-icons/mysky.svg' },
+  { id: 'skytoday', label: 'Sky Today', icon: '/app-icons/skytoday.svg' },
+  { id: 'youtube', label: 'YouTube', icon: '/app-icons/youtube.jpg' },
+  { id: 'mysodexo', label: 'My Sodexo', icon: '/app-icons/mysodexo.svg' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
   { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
-  { id: 'sky', label: 'Sky Mobile' },
+  { id: 'sky', label: "catch 'em all" },
   { id: 'copilot365', label: 'Microsoft 365', icon: '/app-icons/copilot365.jpg' },
-  { id: 'messages', label: 'Messaggi', icon: '/app-icons/messages.jpg' },
   { id: 'camera', label: 'Fotocamera', icon: '/app-icons/camera.jpg' },
   { id: 'weather', label: 'Meteo', icon: '/app-icons/weather.jpg' },
   { id: 'photos', label: 'Foto', icon: '/app-icons/photos.jpg' },
   { id: 'notes', label: 'Note', icon: '/app-icons/notes.jpg' },
-  { id: 'safari', label: 'Safari', icon: '/app-icons/safari.jpg' },
 ]
 
 const DOCK_APPS = [
@@ -32,11 +34,10 @@ const DOCK_APPS = [
   { id: 'music', label: 'Musica', icon: '/app-icons/music.jpg' },
 ]
 
-function SkyIcon() {
+function CatchEmAllIcon() {
   return (
-    <span className="ios-app-icon sky-home-icon">
-      <span className="sky-wordmark">sky</span>
-      <span className="mobile-wordmark">mobile</span>
+    <span className="ios-app-icon ios-official-app-icon sky-home-icon">
+      <img className="ios-app-artwork" src="/app-icons/catch-em-all.svg" alt="catch 'em all app" draggable="false" />
     </span>
   )
 }
@@ -98,9 +99,6 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
   )
 
   const openGame = () => {
-    // Safari/iOS only guarantees WebAudio playback when it is unlocked by a
-    // direct user gesture. Prime the shared context on the same tap that opens
-    // the Sky Mobile game so intro/game music cannot be silently blocked.
     primeAudio()
     onOpen?.()
   }
@@ -124,14 +122,14 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
             return (
               <div className="ios-app-cell sky-cell" key={app.id}>
                 {isGame ? (
-                  <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri Sky Mobile SIM Catch">
-                    <SkyIcon />
-                    <span className="ios-app-label">Sky Mobile</span>
+                  <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri catch 'em all">
+                    <CatchEmAllIcon />
+                    <span className="ios-app-label">catch 'em all</span>
                   </button>
                 ) : (
                   <div className="ios-app-button is-static" aria-hidden="true">
-                    <SkyIcon />
-                    <span className="ios-app-label">Sky Mobile</span>
+                    <CatchEmAllIcon />
+                    <span className="ios-app-label">catch 'em all</span>
                   </div>
                 )}
               </div>
