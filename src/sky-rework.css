@@ -1,0 +1,301 @@
+/* Final overrides for the September Sky feedback rework. */
+
+.sky-text-brand,
+.game-logo,
+.mobile-wordmark,
+.final-claim {
+  font-family: "Sky Text", -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+}
+
+/* Keep the enlarged shared Home usable with the requested app set. */
+.iphone-home-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: 10px 10px;
+  margin-top: 12px;
+}
+
+.ios-app-icon {
+  width: clamp(46px, 13.4vw, 60px);
+}
+
+.sky-home-icon {
+  overflow: hidden;
+}
+
+.sky-home-icon .ios-app-artwork {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Incoming call: replace the small banner with a full-screen caller view. */
+.incoming-call-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #0b1424;
+  color: #fff;
+  user-select: none;
+  touch-action: none;
+  isolation: isolate;
+}
+
+.incoming-talent-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 33%, rgba(255,255,255,.18), transparent 20%),
+    radial-gradient(circle at 28% 20%, rgba(53,214,255,.35), transparent 34%),
+    radial-gradient(circle at 82% 62%, rgba(240,50,157,.36), transparent 38%),
+    linear-gradient(155deg, #17396c, #171d3d 48%, #30134c);
+}
+
+.incoming-talent-backdrop::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  width: min(58vw, 390px);
+  aspect-ratio: .82;
+  border-radius: 48% 48% 34% 34% / 36% 36% 28% 28%;
+  background:
+    radial-gradient(circle at 50% 24%, #e7c8b5 0 13%, transparent 13.5%),
+    radial-gradient(ellipse at 50% 47%, #202c42 0 31%, transparent 31.5%);
+  filter: blur(.2px);
+  opacity: .9;
+  transform: translateX(-50%);
+}
+
+.incoming-talent-backdrop span {
+  position: relative;
+  z-index: 1;
+  margin-top: -4vh;
+  font-size: clamp(110px, 35vw, 260px);
+  font-weight: 250;
+  opacity: .2;
+  letter-spacing: -.08em;
+}
+
+.incoming-call-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,.34), rgba(0,0,0,.03) 34%, rgba(0,0,0,.08) 58%, rgba(0,0,0,.7));
+  pointer-events: none;
+}
+
+.incoming-call-copy {
+  position: absolute;
+  z-index: 2;
+  top: max(70px, calc(env(safe-area-inset-top) + 42px));
+  left: 24px;
+  right: 24px;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(0,0,0,.5);
+}
+
+.incoming-call-copy small {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .18em;
+  opacity: .72;
+}
+
+.incoming-call-copy h1 {
+  margin: 0;
+  font-size: clamp(42px, 11vw, 76px);
+  font-weight: 450;
+  letter-spacing: -.04em;
+}
+
+.incoming-call-copy p {
+  margin: 8px 0 0;
+  font-size: clamp(17px, 4.5vw, 26px);
+  opacity: .86;
+}
+
+.slide-answer-wrap {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: max(58px, calc(env(safe-area-inset-bottom) + 46px));
+  width: min(calc(100% - 42px), 470px);
+  transform: translateX(-50%);
+}
+
+.slide-answer-wrap > p {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 650;
+  opacity: .78;
+}
+
+.slide-answer-track {
+  position: relative;
+  height: 76px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 99px;
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 18px 45px rgba(0,0,0,.22);
+}
+
+.slide-answer-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  min-width: 76px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(52,199,89,.82), rgba(44,224,109,.28));
+  transition: width 70ms linear;
+  pointer-events: none;
+}
+
+.slide-answer-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-left: 54px;
+  color: rgba(255,255,255,.86);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  pointer-events: none;
+  transition: opacity 100ms linear;
+}
+
+.slide-answer-knob {
+  --travel: calc(min(100vw - 42px, 470px) - 76px - 12px);
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  left: 6px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #34c759;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(18,125,49,.42), inset 0 0 0 1px rgba(255,255,255,.35);
+  transform: translateX(calc(var(--slide-progress) * var(--travel)));
+  transition: transform 170ms cubic-bezier(.2,.8,.2,1);
+  cursor: grab;
+  touch-action: none;
+}
+
+.slide-answer-knob:active {
+  cursor: grabbing;
+  transition: none;
+}
+
+.slide-answer-knob span {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 34px;
+  line-height: 1;
+  transform: rotate(-18deg);
+}
+
+/* Neutral game result and direct-tap interaction polish. */
+.neutral-results {
+  background: #071735 !important;
+}
+
+.game-intro h1 {
+  max-width: 720px;
+}
+
+.game-intro .game-instruction {
+  max-width: 620px;
+}
+
+.collectible {
+  pointer-events: auto !important;
+}
+
+@media (max-height: 760px) {
+  .iphone-home-grid {
+    gap: 7px 8px;
+    margin-top: 6px;
+  }
+
+  .ios-app-icon {
+    width: clamp(42px, 12.4vw, 53px);
+  }
+
+  .slide-answer-wrap {
+    bottom: max(34px, calc(env(safe-area-inset-bottom) + 24px));
+  }
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .iphone-home-grid {
+    width: min(calc(100% - 150px), 1320px);
+    margin-top: 42px;
+    gap: clamp(28px, 2.8vh, 58px) clamp(30px, 2.6vw, 64px);
+  }
+
+  .ios-app-icon {
+    width: clamp(108px, 9vw, 172px);
+  }
+
+  .incoming-call-copy {
+    top: 130px;
+  }
+
+  .incoming-call-copy small {
+    font-size: clamp(22px, 1.4vw, 32px);
+  }
+
+  .incoming-call-copy h1 {
+    font-size: clamp(92px, 7vw, 142px);
+  }
+
+  .incoming-call-copy p {
+    font-size: clamp(34px, 2.4vw, 52px);
+  }
+
+  .incoming-talent-backdrop::before {
+    width: min(54vw, 930px);
+  }
+
+  .slide-answer-wrap {
+    width: min(72%, 920px);
+    bottom: 110px;
+  }
+
+  .slide-answer-track {
+    height: 138px;
+  }
+
+  .slide-answer-knob {
+    --travel: calc(min(72vw, 920px) - 138px - 12px);
+    width: 126px;
+    height: 126px;
+  }
+
+  .slide-answer-knob span {
+    font-size: 66px;
+  }
+
+  .slide-answer-label {
+    padding-left: 100px;
+    font-size: clamp(28px, 2vw, 42px);
+  }
+
+  .slide-answer-wrap > p {
+    font-size: clamp(26px, 1.8vw, 38px);
+  }
+}
