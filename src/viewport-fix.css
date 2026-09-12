@@ -20,7 +20,7 @@ body,
 
 /* Lift only the numeric keypad, keeping the lock-screen title and PIN dots in place. */
 .ios-keypad {
-  transform: translateY(-20px);
+  transform: translateY(-50px);
 }
 
 @supports (height: 100dvh) {
