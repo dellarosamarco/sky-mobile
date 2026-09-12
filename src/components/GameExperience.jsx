@@ -142,7 +142,7 @@ export default function GameExperience({ onReset }) {
   useEffect(() => {
     if (phase !== 'intro') return undefined
     audio.startMusic()
-    const timer = window.setTimeout(() => setPhase('countdown'), 3300)
+    const timer = window.setTimeout(() => setPhase('countdown'), 8300)
     return () => window.clearTimeout(timer)
   }, [phase, audio])
 
