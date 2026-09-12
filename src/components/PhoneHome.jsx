@@ -9,6 +9,7 @@ const APPS = [
   { id: 'files', label: 'File', icon: '/app-icons/files.jpg' },
   { id: 'whatsapp', label: 'WhatsApp', icon: '/app-icons/whatsapp.jpg' },
   { id: 'instagram', label: 'Instagram', icon: '/app-icons/instagram.jpg' },
+  { id: 'spotify', label: 'Spotify', icon: '/app-icons/spotify.jpg' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
   { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
   { id: 'sky', label: 'Sky Mobile' },
