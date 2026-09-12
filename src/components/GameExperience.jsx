@@ -1,29 +1,48 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getAudioContext } from '../utils/audio'
+import { applyCollectible, canReplay } from '../gameLogic'
 
-const GAME_SECONDS = 29
-const COUNTDOWN_SECONDS = 5
+const GAME_SECONDS = 30
+const COUNTDOWN_SECONDS = 3
 const RESULT_SECONDS = 5
-const TARGET_SIMS = 35
-const MAX_ATTEMPTS = 2
+const INTRO_MS = 8300
+const MAX_GAMES = 2
 const FINAL_WARNING_SECONDS = 5
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value))
-}
 
 function formatTime(seconds) {
   const safe = Math.max(0, seconds)
   return `00:${String(safe).padStart(2, '0')}`
 }
 
-function SkySim({ style }) {
+function SkySim() {
   return (
-    <div className="falling-sim" style={style} aria-hidden="true">
+    <span className="collectible-sim-art" aria-hidden="true">
       <span className="sim-notch" />
       <span className="sim-brand"><b>sky</b><small>mobile</small></span>
-    </div>
+    </span>
   )
+}
+
+function CollectibleArtwork({ type }) {
+  if (type === '5g') {
+    return (
+      <span className="bonus-art bonus-art-5g" aria-hidden="true">
+        <strong>5G</strong>
+        <small>+10</small>
+      </span>
+    )
+  }
+
+  if (type === 'network') {
+    return (
+      <span className="bonus-art bonus-art-network" aria-hidden="true">
+        <span className="network-bars"><i /><i /><i /><i /></span>
+        <strong>×2</strong>
+      </span>
+    )
+  }
+
+  return <SkySim />
 }
 
 function useArcadeAudio() {
@@ -50,13 +69,28 @@ function useArcadeAudio() {
     oscillator.stop(ctx.currentTime + duration)
   }, [ensureContext])
 
-  const collect = useCallback(() => {
+  const collect = useCallback((type) => {
+    if (type === '5g') {
+      tone(880, 0.11, 0.095, 'square')
+      window.setTimeout(() => tone(1320, 0.16, 0.085, 'triangle'), 70)
+      window.setTimeout(() => tone(1760, 0.18, 0.07, 'triangle'), 145)
+      return
+    }
+
+    if (type === 'network') {
+      tone(520, 0.12, 0.09, 'sawtooth')
+      window.setTimeout(() => tone(780, 0.16, 0.08, 'square'), 70)
+      window.setTimeout(() => tone(1040, 0.2, 0.075, 'triangle'), 145)
+      return
+    }
+
     tone(880, 0.07, 0.07, 'triangle')
     window.setTimeout(() => tone(1320, 0.08, 0.05, 'triangle'), 55)
   }, [tone])
 
-  const miss = useCallback(() => tone(180, 0.11, 0.035, 'sine'), [tone])
-  const countdown = useCallback((last = false) => tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.055, 'square'), [tone])
+  const countdown = useCallback((last = false) => {
+    tone(last ? 980 : 540, last ? 0.2 : 0.08, 0.055, 'square')
+  }, [tone])
 
   const finalWarning = useCallback((remaining) => {
     if (remaining <= 0) {
@@ -84,21 +118,12 @@ function useArcadeAudio() {
     let index = 0
 
     const playStep = () => {
-      tone(melody[index % melody.length], 0.2, 0.04, 'triangle')
-
-      if (index % 2 === 0) {
-        tone(bass[(index / 2) % bass.length], 0.24, 0.022, 'sine')
-      }
-
-      if (index % 4 === 0) {
-        tone(784, 0.045, 0.014, 'square')
-      }
-
+      tone(melody[index % melody.length], 0.2, 0.035, 'triangle')
+      if (index % 2 === 0) tone(bass[(index / 2) % bass.length], 0.24, 0.02, 'sine')
+      if (index % 4 === 0) tone(784, 0.045, 0.012, 'square')
       index += 1
     }
 
-    // Play immediately instead of waiting for the first interval tick. This also
-    // makes it obvious on iOS that audio was successfully unlocked.
     playStep()
     musicTimerRef.current = window.setInterval(playStep, 260)
   }, [ensureContext, tone])
@@ -111,38 +136,47 @@ function useArcadeAudio() {
   useEffect(() => () => stopMusic(), [stopMusic])
 
   return useMemo(
-    () => ({ ensureContext, collect, miss, countdown, finalWarning, startMusic, stopMusic }),
-    [ensureContext, collect, miss, countdown, finalWarning, startMusic, stopMusic],
+    () => ({ ensureContext, collect, countdown, finalWarning, startMusic, stopMusic }),
+    [ensureContext, collect, countdown, finalWarning, startMusic, stopMusic],
   )
+}
+
+function randomCollectibleType() {
+  const roll = Math.random()
+  if (roll < 0.07) return 'network'
+  if (roll < 0.18) return '5g'
+  return 'sim'
+}
+
+function collectLabel(type) {
+  if (type === '5g') return '+10 SIM'
+  if (type === 'network') return 'SIM ×2'
+  return '+1 SIM'
 }
 
 export default function GameExperience({ onReset }) {
   const [phase, setPhase] = useState('intro')
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
   const [timeLeft, setTimeLeft] = useState(GAME_SECONDS)
-  const [score, setScore] = useState(0)
   const [simCount, setSimCount] = useState(0)
-  const [attempt, setAttempt] = useState(1)
-  const [sims, setSims] = useState([])
-  const [flash, setFlash] = useState(false)
+  const [completedGames, setCompletedGames] = useState(0)
+  const [collectibles, setCollectibles] = useState([])
+  const [effects, setEffects] = useState([])
+  const [boostType, setBoostType] = useState(null)
 
-  const fieldRef = useRef(null)
-  const catcherRef = useRef(null)
-  const activePointerRef = useRef(null)
   const gameStartedAtRef = useRef(0)
   const lastFrameRef = useRef(0)
   const lastSpawnRef = useRef(0)
   const nextIdRef = useRef(1)
-  const scoreRef = useRef(0)
+  const nextEffectIdRef = useRef(1)
   const simCountRef = useRef(0)
-  const catcherXRef = useRef(50)
   const lastDisplayedSecondRef = useRef(GAME_SECONDS)
   const audio = useArcadeAudio()
 
   useEffect(() => {
     if (phase !== 'intro') return undefined
     audio.startMusic()
-    const timer = window.setTimeout(() => setPhase('countdown'), 8300)
+    const timer = window.setTimeout(() => setPhase('countdown'), INTRO_MS)
     return () => window.clearTimeout(timer)
   }, [phase, audio])
 
@@ -152,6 +186,7 @@ export default function GameExperience({ onReset }) {
     setCountdown(COUNTDOWN_SECONDS)
     let current = COUNTDOWN_SECONDS
     audio.countdown(false)
+
     const timer = window.setInterval(() => {
       current -= 1
       if (current <= 0) {
@@ -163,99 +198,27 @@ export default function GameExperience({ onReset }) {
       setCountdown(current)
       audio.countdown(current === 1)
     }, 1000)
+
     return () => window.clearInterval(timer)
   }, [phase, audio])
-
-  const moveCatcher = useCallback((clientX) => {
-    const field = fieldRef.current
-    const catcher = catcherRef.current
-    if (!field || !catcher) return
-
-    const rect = field.getBoundingClientRect()
-    const x = clamp(((clientX - rect.left) / rect.width) * 100, 8, 92)
-
-    catcherXRef.current = x
-    catcher.style.left = `${x}%`
-  }, [])
-
-  useEffect(() => {
-    if (phase !== 'playing') return undefined
-
-    const field = fieldRef.current
-    if (!field) return undefined
-
-    const latestSample = (event) => {
-      const samples = typeof event.getCoalescedEvents === 'function' ? event.getCoalescedEvents() : null
-      return samples?.length ? samples[samples.length - 1] : event
-    }
-
-    const applyPointer = (event) => {
-      const sample = latestSample(event)
-      moveCatcher(sample.clientX)
-    }
-
-    const onPointerDown = (event) => {
-      if (activePointerRef.current !== null && activePointerRef.current !== event.pointerId) return
-      if (event.cancelable) event.preventDefault()
-      activePointerRef.current = event.pointerId
-      audio.ensureContext()
-      try {
-        field.setPointerCapture?.(event.pointerId)
-      } catch {
-        // Pointer capture can fail on a pointer that already ended; tracking still works.
-      }
-      applyPointer(event)
-    }
-
-    const onPointerMove = (event) => {
-      if (activePointerRef.current !== event.pointerId) return
-      if (event.cancelable) event.preventDefault()
-      applyPointer(event)
-    }
-
-    const onPointerEnd = (event) => {
-      if (activePointerRef.current !== event.pointerId) return
-      try {
-        if (field.hasPointerCapture?.(event.pointerId)) field.releasePointerCapture(event.pointerId)
-      } catch {
-        // Safe no-op when the browser already released the pointer.
-      }
-      activePointerRef.current = null
-    }
-
-    field.addEventListener('pointerdown', onPointerDown, { passive: false })
-    const moveEvent = 'onpointerrawupdate' in window ? 'pointerrawupdate' : 'pointermove'
-    field.addEventListener(moveEvent, onPointerMove, { passive: false })
-    field.addEventListener('pointerup', onPointerEnd)
-    field.addEventListener('pointercancel', onPointerEnd)
-
-    return () => {
-      field.removeEventListener('pointerdown', onPointerDown)
-      field.removeEventListener(moveEvent, onPointerMove)
-      field.removeEventListener('pointerup', onPointerEnd)
-      field.removeEventListener('pointercancel', onPointerEnd)
-      activePointerRef.current = null
-    }
-  }, [phase, moveCatcher, audio])
 
   useEffect(() => {
     if (phase !== 'playing') return undefined
 
     gameStartedAtRef.current = performance.now()
     lastFrameRef.current = gameStartedAtRef.current
-    lastSpawnRef.current = gameStartedAtRef.current - 700
+    lastSpawnRef.current = gameStartedAtRef.current - 650
     lastDisplayedSecondRef.current = GAME_SECONDS
-    catcherXRef.current = 50
-    if (catcherRef.current) catcherRef.current.style.left = '50%'
-    setTimeLeft(GAME_SECONDS)
-    setScore(0)
-    setSimCount(0)
-    scoreRef.current = 0
     simCountRef.current = 0
-    setSims([])
+    setTimeLeft(GAME_SECONDS)
+    setSimCount(0)
+    setCollectibles([])
+    setEffects([])
+    setBoostType(null)
     audio.startMusic()
 
     let animationFrame
+
     const tick = (now) => {
       const elapsedSeconds = (now - gameStartedAtRef.current) / 1000
       const remaining = Math.max(0, Math.ceil(GAME_SECONDS - elapsedSeconds))
@@ -263,67 +226,37 @@ export default function GameExperience({ onReset }) {
       if (remaining !== lastDisplayedSecondRef.current) {
         lastDisplayedSecondRef.current = remaining
         setTimeLeft(remaining)
-
-        if (remaining <= FINAL_WARNING_SECONDS) {
-          audio.finalWarning(remaining)
-        }
+        if (remaining <= FINAL_WARNING_SECONDS) audio.finalWarning(remaining)
       }
 
       if (elapsedSeconds >= GAME_SECONDS) {
         audio.stopMusic()
-        if (simCountRef.current >= TARGET_SIMS) {
-          setPhase('results')
-        } else if (attempt < MAX_ATTEMPTS) {
-          setPhase('failed')
-        } else {
-          setPhase('failed-final')
-        }
+        setCompletedGames((current) => current + 1)
+        setPhase('results')
         return
       }
 
       const dt = Math.min(0.035, (now - lastFrameRef.current) / 1000)
       lastFrameRef.current = now
-      const difficulty = Math.min(1.55, 1 + elapsedSeconds / 95)
-      const spawnEvery = Math.max(360, 700 - elapsedSeconds * 4.2)
+      const difficulty = Math.min(1.5, 1 + elapsedSeconds / 100)
+      const spawnEvery = Math.max(360, 680 - elapsedSeconds * 4.2)
 
-      setSims((current) => {
-        const updated = []
-        current.forEach((sim) => {
-          const nextY = sim.y + sim.speed * difficulty * dt
-          const catchZone = nextY >= 82 && nextY <= 94
-          const distance = Math.abs(sim.x - catcherXRef.current)
-
-          if (catchZone && distance < 11) {
-            scoreRef.current += 10
-            simCountRef.current += 1
-            setScore(scoreRef.current)
-            setSimCount(simCountRef.current)
-            setFlash(true)
-            window.setTimeout(() => setFlash(false), 100)
-            audio.collect()
-            return
-          }
-
-          if (nextY > 108) {
-            audio.miss()
-            return
-          }
-
-          updated.push({ ...sim, y: nextY })
-        })
-        return updated
-      })
+      setCollectibles((current) => current
+        .map((item) => ({ ...item, y: item.y + item.speed * difficulty * dt }))
+        .filter((item) => item.y <= 112))
 
       if (now - lastSpawnRef.current >= spawnEvery) {
         lastSpawnRef.current = now
-        setSims((current) => [
+        const type = randomCollectibleType()
+        setCollectibles((current) => [
           ...current,
           {
             id: nextIdRef.current++,
+            type,
             x: 9 + Math.random() * 82,
-            y: -14,
-            speed: 24 + Math.random() * 13,
-            rotate: -15 + Math.random() * 30,
+            y: -12,
+            speed: 22 + Math.random() * 12,
+            rotate: -13 + Math.random() * 26,
           },
         ])
       }
@@ -336,120 +269,135 @@ export default function GameExperience({ onReset }) {
       cancelAnimationFrame(animationFrame)
       audio.stopMusic()
     }
-  }, [phase, attempt, audio])
+  }, [phase, audio])
 
   useEffect(() => {
-    if (phase !== 'results' && phase !== 'failed-final') return undefined
+    if (phase !== 'results' || completedGames < MAX_GAMES) return undefined
     const timer = window.setTimeout(() => onReset?.(), RESULT_SECONDS * 1000)
     return () => window.clearTimeout(timer)
-  }, [phase, onReset])
+  }, [phase, completedGames, onReset])
+
+  const collectItem = useCallback((event, item) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    setCollectibles((current) => current.filter((entry) => entry.id !== item.id))
+
+    const nextTotal = applyCollectible(simCountRef.current, item.type)
+    simCountRef.current = nextTotal
+    setSimCount(nextTotal)
+    audio.collect(item.type)
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    const effectId = nextEffectIdRef.current++
+    setEffects((current) => [
+      ...current,
+      {
+        id: effectId,
+        type: item.type,
+        label: collectLabel(item.type),
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      },
+    ])
+
+    if (item.type !== 'sim') {
+      setBoostType(item.type)
+      window.setTimeout(() => setBoostType(null), 520)
+    }
+
+    window.setTimeout(() => {
+      setEffects((current) => current.filter((effect) => effect.id !== effectId))
+    }, 700)
+  }, [audio])
 
   const retry = () => {
-    if (attempt >= MAX_ATTEMPTS) return
-    setAttempt((current) => current + 1)
+    if (!canReplay(completedGames)) return
     setPhase('countdown')
   }
 
   if (phase === 'intro') {
     return (
-      <main className="game-intro" onPointerDown={() => audio.ensureContext()}>
+      <main className="game-intro sky-text-brand" onPointerDown={() => audio.ensureContext()}>
         <div className="game-glow" aria-hidden="true" />
         <div className="game-logo"><b>sky</b><span>mobile</span></div>
-        <p className="game-kicker">SIM CATCH</p>
-        <h1>Con Sky Mobile hai <span>_____ _____.</span></h1>
-        <p className="game-instruction">Raccogli almeno {TARGET_SIMS} SIM prima dello scadere del tempo.</p>
-        <div className="intro-sim-card"><SkySim /></div>
+        <p className="game-kicker">CATCH 'EM ALL</p>
+        <h1>Prendi più SIM possibili prima dello scadere del tempo!</h1>
+        <p className="game-instruction">Tocca direttamente le SIM mentre cadono. Occhio ai bonus 5G e rete.</p>
+        <div className="intro-sim-card"><span className="falling-sim intro-static-sim"><SkySim /></span></div>
       </main>
     )
   }
 
   if (phase === 'countdown') {
     return (
-      <main className="game-countdown" onPointerDown={() => audio.ensureContext()}>
-        <span>Tentativo {attempt} di {MAX_ATTEMPTS}</span>
+      <main className="game-countdown sky-text-brand" onPointerDown={() => audio.ensureContext()}>
+        <span>Preparati</span>
         <strong key={countdown}>{countdown}</strong>
-        <p>Obiettivo: {TARGET_SIMS} SIM</p>
-      </main>
-    )
-  }
-
-  if (phase === 'failed') {
-    return (
-      <main className="game-results game-failure-screen">
-        <div className="results-card failure-card">
-          <div className="result-error">×</div>
-          <span>Tempo scaduto</span>
-          <h1>{simCount}</h1>
-          <p>SIM prese su {TARGET_SIMS}</p>
-          <div className="result-divider" />
-          <strong>Non hai raccolto abbastanza SIM</strong>
-          <p className="result-copy">Ti resta un ultimo tentativo.</p>
-          <button className="retry-button" type="button" onClick={retry}>Riprova</button>
-          <small>Tentativo {attempt} di {MAX_ATTEMPTS}</small>
-        </div>
-      </main>
-    )
-  }
-
-  if (phase === 'failed-final') {
-    return (
-      <main className="game-results game-failure-screen">
-        <div className="results-card failure-card">
-          <div className="result-error">×</div>
-          <span>Tempo scaduto</span>
-          <h1>{simCount}</h1>
-          <p>SIM prese su {TARGET_SIMS}</p>
-          <div className="result-divider" />
-          <strong>Tentativi terminati</strong>
-          <p className="result-copy">Hai utilizzato entrambi i tentativi.</p>
-          <small>Reset automatico in {RESULT_SECONDS} secondi</small>
-        </div>
+        <p>Tocca le SIM per prenderle</p>
       </main>
     )
   }
 
   if (phase === 'results') {
+    const replayAvailable = canReplay(completedGames)
     return (
-      <main className="game-results">
-        <div className="results-card success-card">
-          <div className="result-check">✓</div>
-          <span>Obiettivo raggiunto!</span>
+      <main className="game-results neutral-results sky-text-brand">
+        <div className="results-card neutral-results-card">
+          <div className="result-spark">✦</div>
+          <span>Partita terminata</span>
           <h1>{simCount}</h1>
           <p>SIM prese</p>
           <div className="result-divider" />
-          <strong>Complimenti!</strong>
-          <p className="result-copy">Hai raccolto almeno {TARGET_SIMS} SIM.</p>
-          <small>Reset automatico in {RESULT_SECONDS} secondi</small>
+          <div className="result-stat-row"><span>Giga consumati</span><strong>—</strong></div>
+          <div className="final-claim">Con Sky Mobile hai <b>_____ _____.</b></div>
+          {replayAvailable ? (
+            <button className="retry-button" type="button" onClick={retry}>Riprova</button>
+          ) : (
+            <small>Reset automatico in {RESULT_SECONDS} secondi</small>
+          )}
         </div>
       </main>
     )
   }
 
   return (
-    <main ref={fieldRef} className={`game-field ${flash ? 'is-catching' : ''}`}>
+    <main className={`game-field tap-game ${boostType ? `is-boosting boost-${boostType}` : ''}`} onPointerDown={() => audio.ensureContext()}>
       <div className="game-field-bg" aria-hidden="true" />
-      <header className="game-hud game-hud-three">
-        <div><small>SIM PRESE</small><strong>{simCount}<span className="target-sims">/{TARGET_SIMS}</span></strong></div>
-        <div><small>TENTATIVO</small><strong>{attempt}/{MAX_ATTEMPTS}</strong></div>
+
+      <header className="game-hud game-hud-two">
+        <div><small>SIM PRESE</small><strong>{simCount}</strong></div>
         <div className={timeLeft <= 10 ? 'urgent' : ''}><small>TEMPO</small><strong>{formatTime(timeLeft)}</strong></div>
       </header>
 
-      <div className="game-copy-strip">Raccogli almeno {TARGET_SIMS} SIM</div>
+      <div className="game-copy-strip">Tocca le SIM e i bonus</div>
 
-      {sims.map((sim) => (
-        <SkySim
-          key={sim.id}
-          style={{ left: `${sim.x}%`, top: `${sim.y}%`, transform: `translate(-50%, -50%) rotate(${sim.rotate}deg)` }}
-        />
+      {collectibles.map((item) => (
+        <button
+          key={item.id}
+          className={`collectible collectible--${item.type}`}
+          type="button"
+          aria-label={item.type === 'sim' ? 'Raccogli SIM' : item.type === '5g' ? 'Bonus 5G più 10 SIM' : 'Bonus rete raddoppia SIM'}
+          onPointerDown={(event) => collectItem(event, item)}
+          style={{ left: `${item.x}%`, top: `${item.y}%`, transform: `translate(-50%, -50%) rotate(${item.rotate}deg)` }}
+        >
+          <CollectibleArtwork type={item.type} />
+        </button>
       ))}
 
-      <div className="catch-zone" aria-hidden="true" />
-      <div ref={catcherRef} className="catcher" aria-hidden="true">
-        <span className="catcher-glow" />
-        <div className="catcher-body"><b>sky</b><small>mobile</small></div>
-      </div>
+      {effects.map((effect) => (
+        <div
+          className={`collect-effect collect-effect--${effect.type}`}
+          key={effect.id}
+          style={{ left: effect.x, top: effect.y }}
+          aria-hidden="true"
+        >
+          <span>{effect.label}</span>
+          <i /><i /><i /><i />
+        </div>
+      ))}
 
-      <div className="game-touch-hint">↔ TRASCINA</div>
+      <div className="tap-game-hint">TOCCA PER PRENDERE</div>
     </main>
   )
 }
