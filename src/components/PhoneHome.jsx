@@ -36,8 +36,8 @@ const DOCK_APPS = [
 
 function CatchEmAllIcon() {
   return (
-    <span className="ios-app-icon ios-official-app-icon sky-home-icon">
-      <img className="ios-app-artwork" src="/app-icons/catch-em-all.svg" alt="catch 'em all app" draggable="false" />
+    <span className="ios-app-icon sky-home-icon catch-em-all-icon" aria-hidden="true">
+      <span className="falling-sim supplied-sim-art catch-em-all-sim" />
     </span>
   )
 }
