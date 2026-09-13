@@ -6,7 +6,6 @@ const GAME_SECONDS = 30
 const COUNTDOWN_SECONDS = 3
 const RESULT_SECONDS = 5
 const INTRO_MS = 8300
-const MAX_GAMES = 2
 const FINAL_WARNING_SECONDS = 5
 
 function formatTime(seconds) {
@@ -267,7 +266,7 @@ export default function GameExperience({ onReset }) {
   }, [phase, audio])
 
   useEffect(() => {
-    if (phase !== 'results' || completedGames < MAX_GAMES) return undefined
+    if (phase !== 'results') return undefined
     const timer = window.setTimeout(() => onReset?.(), RESULT_SECONDS * 1000)
     return () => window.clearTimeout(timer)
   }, [phase, completedGames, onReset])
