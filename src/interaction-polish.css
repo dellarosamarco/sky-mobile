@@ -10,6 +10,61 @@
   width: clamp(57px, calc(15vw - 11px), 93px) !important;
 }
 
+/* The reworked tap game must still reuse the exact supplied SIM image from
+   sim-artwork.css rather than drawing a replacement card in CSS. */
+.collectible .supplied-sim-art {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  display: block !important;
+  width: 76% !important;
+  height: auto !important;
+  aspect-ratio: .575 !important;
+  transform: none !important;
+  flex: 0 0 auto;
+}
+
+.intro-sim-card {
+  display: grid;
+  place-items: center;
+}
+
+.intro-sim-card .intro-supplied-sim {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  width: clamp(76px, 19vw, 112px) !important;
+  height: auto !important;
+  aspect-ratio: .575 !important;
+  transform: rotate(8deg) !important;
+}
+
+/* Home launcher: keep the requested coloured app tile, but put the exact
+   supplied Sky Mobile SIM in the middle of it. */
+.catch-em-all-icon {
+  position: relative;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 14%, rgba(255,255,255,.55), transparent 27%),
+    linear-gradient(145deg, #ff7a00 0%, #ff288c 34%, #7d36ce 61%, #00a9e8 100%) !important;
+}
+
+.catch-em-all-icon .catch-em-all-sim {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  width: 44% !important;
+  height: auto !important;
+  aspect-ratio: .575 !important;
+  transform: rotate(8deg) !important;
+  filter: drop-shadow(0 6px 7px rgba(0, 0, 0, .28));
+}
+
 /* Give the Sky wordmark a little more breathing room from the top edge. */
 .sky-home-icon .sky-wordmark {
   transform: translateY(3px);
@@ -50,6 +105,10 @@
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
   .sky-home-icon .sky-wordmark {
     transform: translateY(6px);
+  }
+
+  .intro-sim-card .intro-supplied-sim {
+    width: clamp(150px, 12vw, 230px) !important;
   }
 
   @keyframes sky-app-attention {
