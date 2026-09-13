@@ -14,13 +14,8 @@ function formatTime(seconds) {
   return `00:${String(safe).padStart(2, '0')}`
 }
 
-function SkySim() {
-  return (
-    <span className="collectible-sim-art" aria-hidden="true">
-      <span className="sim-notch" />
-      <span className="sim-brand"><b>sky</b><small>mobile</small></span>
-    </span>
-  )
+function SkySim({ className = '' }) {
+  return <span className={`falling-sim supplied-sim-art ${className}`.trim()} aria-hidden="true" />
 }
 
 function CollectibleArtwork({ type }) {
@@ -324,7 +319,7 @@ export default function GameExperience({ onReset }) {
         <p className="game-kicker">CATCH 'EM ALL</p>
         <h1>Prendi più SIM possibili prima dello scadere del tempo!</h1>
         <p className="game-instruction">Tocca direttamente le SIM mentre cadono. Occhio ai bonus 5G e rete.</p>
-        <div className="intro-sim-card"><span className="falling-sim intro-static-sim"><SkySim /></span></div>
+        <div className="intro-sim-card"><SkySim className="intro-supplied-sim" /></div>
       </main>
     )
   }
