@@ -77,6 +77,27 @@ if (!xfactorIconResponse.ok) {
 await writeFile(path.join(outDir, 'xfactor.jpg'), Buffer.from(await xfactorIconResponse.arrayBuffer()))
 console.log('Fetched official X Factor 2026 icon from Italian Apple App Store')
 
+const MY_SKY_ID = 1441293148
+const mySkyLookupResponse = await fetch(`https://itunes.apple.com/lookup?id=${MY_SKY_ID}&country=it`)
+if (!mySkyLookupResponse.ok) {
+  throw new Error(`My Sky App Store lookup failed: ${mySkyLookupResponse.status} ${mySkyLookupResponse.statusText}`)
+}
+
+const mySkyPayload = await mySkyLookupResponse.json()
+const mySkyApp = mySkyPayload.results.find((item) => Number(item.trackId) === MY_SKY_ID)
+const mySkyArtworkUrl = mySkyApp?.artworkUrl512 || mySkyApp?.artworkUrl100
+if (!mySkyArtworkUrl) {
+  throw new Error(`Official Italian My Sky artwork missing (${MY_SKY_ID})`)
+}
+
+const mySkyIconResponse = await fetch(mySkyArtworkUrl)
+if (!mySkyIconResponse.ok) {
+  throw new Error(`Failed to download My Sky icon: ${mySkyIconResponse.status} ${mySkyIconResponse.statusText}`)
+}
+
+await writeFile(path.join(outDir, 'mysky.jpg'), Buffer.from(await mySkyIconResponse.arrayBuffer()))
+console.log('Fetched official My Sky icon from Italian Apple App Store')
+
 const appStoreFallback = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2fb8ff"/><stop offset="1" stop-color="#0875f5"/></linearGradient></defs>
