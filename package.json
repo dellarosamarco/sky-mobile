@@ -7,7 +7,7 @@
     "prepare:icons": "node scripts/fetch-apple-icons.mjs",
     "test": "node --test",
     "dev": "npm run prepare:icons && vite",
-    "build": "npm run prepare:icons && vite build",
+    "build": "npm test && npm run prepare:icons && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
