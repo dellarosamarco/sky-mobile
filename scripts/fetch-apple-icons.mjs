@@ -56,6 +56,27 @@ for (const [name, id] of APPS) {
   console.log(`Fetched official ${name} icon from Apple App Store`)
 }
 
+const XFACTOR_ID = 470542789
+const xfactorLookupResponse = await fetch(`https://itunes.apple.com/lookup?id=${XFACTOR_ID}&country=it`)
+if (!xfactorLookupResponse.ok) {
+  throw new Error(`X Factor App Store lookup failed: ${xfactorLookupResponse.status} ${xfactorLookupResponse.statusText}`)
+}
+
+const xfactorPayload = await xfactorLookupResponse.json()
+const xfactorApp = xfactorPayload.results.find((item) => Number(item.trackId) === XFACTOR_ID)
+const xfactorArtworkUrl = xfactorApp?.artworkUrl512 || xfactorApp?.artworkUrl100
+if (!xfactorArtworkUrl) {
+  throw new Error(`Official Italian X Factor artwork missing (${XFACTOR_ID})`)
+}
+
+const xfactorIconResponse = await fetch(xfactorArtworkUrl)
+if (!xfactorIconResponse.ok) {
+  throw new Error(`Failed to download X Factor icon: ${xfactorIconResponse.status} ${xfactorIconResponse.statusText}`)
+}
+
+await writeFile(path.join(outDir, 'xfactor.jpg'), Buffer.from(await xfactorIconResponse.arrayBuffer()))
+console.log('Fetched official X Factor 2026 icon from Italian Apple App Store')
+
 const appStoreFallback = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2fb8ff"/><stop offset="1" stop-color="#0875f5"/></linearGradient></defs>
