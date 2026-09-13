@@ -12,7 +12,7 @@ const APPS = [
   { id: 'spotify', label: 'Spotify', icon: '/app-icons/spotify.jpg' },
   { id: 'facetime', label: 'FaceTime', icon: '/app-icons/facetime.jpg' },
   { id: 'teams', label: 'Teams', icon: '/app-icons/teams.jpg' },
-  { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.svg' },
+  { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.jpg' },
   { id: 'mysky', label: 'My Sky', icon: '/app-icons/mysky.svg' },
   { id: 'skytoday', label: 'Sky Today', icon: '/app-icons/skytoday.svg' },
   { id: 'youtube', label: 'YouTube', icon: '/app-icons/youtube.jpg' },
