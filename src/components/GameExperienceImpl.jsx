@@ -9,7 +9,11 @@ const INTRO_MS = 8300
 const FINAL_WARNING_SECONDS = 5
 const SIM_SPEED_MULTIPLIER = 1.2
 const BONUS_SPEED_MULTIPLIER = 1.4
-const SPAWN_RATE_MULTIPLIER = 1.1
+const SIM_SPAWN_RATE_MULTIPLIER = 1.2
+const NETWORK_SPAWN_WEIGHT = 0.07
+const FIVE_G_SPAWN_WEIGHT = 0.11
+const SIM_SPAWN_WEIGHT = 0.82 * SIM_SPAWN_RATE_MULTIPLIER
+const TOTAL_SPAWN_WEIGHT = NETWORK_SPAWN_WEIGHT + FIVE_G_SPAWN_WEIGHT + SIM_SPAWN_WEIGHT
 
 function formatTime(seconds) {
   const safe = Math.max(0, seconds)
@@ -139,9 +143,9 @@ function useArcadeAudio() {
 }
 
 function randomCollectibleType() {
-  const roll = Math.random()
-  if (roll < 0.07) return 'network'
-  if (roll < 0.18) return '5g'
+  const roll = Math.random() * TOTAL_SPAWN_WEIGHT
+  if (roll < NETWORK_SPAWN_WEIGHT) return 'network'
+  if (roll < NETWORK_SPAWN_WEIGHT + FIVE_G_SPAWN_WEIGHT) return '5g'
   return 'sim'
 }
 
@@ -236,7 +240,7 @@ export default function GameExperience({ onReset }) {
       const dt = Math.min(0.035, (now - lastFrameRef.current) / 1000)
       lastFrameRef.current = now
       const difficulty = Math.min(1.5, 1 + elapsedSeconds / 100)
-      const spawnEvery = Math.max(360, 680 - elapsedSeconds * 4.2) / SPAWN_RATE_MULTIPLIER
+      const spawnEvery = Math.max(360, 680 - elapsedSeconds * 4.2) / TOTAL_SPAWN_WEIGHT
 
       setCollectibles((current) => current
         .map((item) => ({ ...item, y: item.y + item.speed * difficulty * dt }))
