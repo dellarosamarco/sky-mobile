@@ -42,9 +42,10 @@ function CatchEmAllIcon() {
   )
 }
 
-function AppleArtwork({ src, label }) {
+function AppleArtwork({ src, label, id }) {
+  const extraClass = id === 'skytoday' ? ' sky-today-app-icon' : ''
   return (
-    <span className="ios-app-icon ios-official-app-icon">
+    <span className={`ios-app-icon ios-official-app-icon${extraClass}`}>
       <img className="ios-app-artwork" src={src} alt={`${label} app`} draggable="false" />
     </span>
   )
@@ -139,7 +140,7 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
           return (
             <div className="ios-app-cell" key={app.id} aria-hidden="true">
               <div className="ios-app-button is-static">
-                <AppleArtwork src={app.icon} label={app.label} />
+                <AppleArtwork src={app.icon} label={app.label} id={app.id} />
                 <span className="ios-app-label">{app.label}</span>
               </div>
             </div>
