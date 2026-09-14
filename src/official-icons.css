@@ -15,18 +15,6 @@
   -webkit-user-drag: none;
 }
 
-/* Sky Today artwork was supplied as an already-rounded icon from the PDF.
-   Give it its own crop/radius so it does not look like an icon nested inside
-   the generic iOS mask. */
-.sky-today-app-icon {
-  border-radius: 18%;
-}
-
-.sky-today-app-icon .ios-app-artwork {
-  transform: scale(1.09);
-  transform-origin: center;
-}
-
 .phone-dock .ios-dock-app {
   overflow: hidden;
   padding: 0;
