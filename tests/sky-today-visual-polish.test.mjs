@@ -4,14 +4,15 @@ import { readFile } from 'node:fs/promises'
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('Sky Today gets dedicated visual treatment instead of generic double rounding', async () => {
+test('Sky Today uses the standard app icon rendering with no dedicated crop hacks', async () => {
   const [home, css] = await Promise.all([
     read('src/components/PhoneHome.jsx'),
     read('src/official-icons.css'),
   ])
 
-  assert.match(home, /sky-today-app-icon/)
-  assert.match(css, /\.sky-today-app-icon\s*\{/)
-  assert.match(css, /border-radius:\s*18%/)
-  assert.match(css, /\.sky-today-app-icon \.ios-app-artwork\s*\{[\s\S]*transform:\s*scale\(1\.09\)/)
+  assert.doesNotMatch(home, /sky-today-app-icon/)
+  assert.match(home, /function AppleArtwork\(\{ src, label \}\)/)
+  assert.match(home, /<AppleArtwork src=\{app\.icon\} label=\{app\.label\} \/>/)
+  assert.doesNotMatch(css, /\.sky-today-app-icon/)
+  assert.doesNotMatch(css, /scale\(1\.09\)/)
 })
