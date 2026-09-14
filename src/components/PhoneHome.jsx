@@ -14,7 +14,7 @@ const APPS = [
   { id: 'teams', label: 'Teams', icon: '/app-icons/teams.jpg' },
   { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.jpg' },
   { id: 'mysky', label: 'My Sky', icon: '/app-icons/mysky.jpg' },
-  { id: 'skytoday', label: 'Sky Today', icon: '/app-icons/skytoday.webp' },
+  { id: 'skytoday', label: 'Sky Today', icon: '/app-icons/skytoday.svg' },
   { id: 'youtube', label: 'YouTube', icon: '/app-icons/youtube.jpg' },
   { id: 'mysodexo', label: 'My Sodexo', icon: '/app-icons/mysodexo.png' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
