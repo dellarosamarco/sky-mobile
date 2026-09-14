@@ -8,7 +8,7 @@ test('September Sky feedback remains implemented across lock, home, game and vid
   const [lockCss, home, game, video] = await Promise.all([
     read('src/viewport-fix.css'),
     read('src/components/PhoneHome.jsx'),
-    read('src/components/GameExperience.jsx'),
+    read('src/components/GameExperienceImpl.jsx'),
     read('src/components/VideoCallExperience.jsx'),
   ])
 
