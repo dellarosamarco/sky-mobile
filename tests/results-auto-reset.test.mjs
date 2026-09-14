@@ -5,14 +5,14 @@ import { readFile } from 'node:fs/promises'
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('every results screen auto-resets to the PIN unless the user retries first', async () => {
-  const game = await read('src/components/GameExperience.jsx')
+  const game = await read('src/components/GameExperienceImpl.jsx')
 
   assert.doesNotMatch(game, /phase !== 'results' \|\| completedGames < MAX_GAMES/)
   assert.match(game, /if \(phase !== 'results'\) return undefined[\s\S]{0,240}setTimeout\(\(\) => onReset\?\.\(\), RESULT_SECONDS \* 1000\)/)
 })
 
 test('gameplay uses the requested speed and spawn multipliers', async () => {
-  const game = await read('src/components/GameExperience.jsx')
+  const game = await read('src/components/GameExperienceImpl.jsx')
 
   assert.match(game, /SIM_SPEED_MULTIPLIER = 1\.2/)
   assert.match(game, /BONUS_SPEED_MULTIPLIER = 1\.4/)
