@@ -11,13 +11,19 @@ test('every results screen auto-resets to the PIN unless the user retries first'
   assert.match(game, /if \(phase !== 'results'\) return undefined[\s\S]{0,240}setTimeout\(\(\) => onReset\?\.\(\), RESULT_SECONDS \* 1000\)/)
 })
 
-test('gameplay uses the requested speed and spawn multipliers', async () => {
+test('SIM spawn increases 20 percent while bonus spawn stays unchanged and requested speeds are preserved', async () => {
   const game = await read('src/components/GameExperienceImpl.jsx')
 
   assert.match(game, /SIM_SPEED_MULTIPLIER = 1\.2/)
   assert.match(game, /BONUS_SPEED_MULTIPLIER = 1\.4/)
-  assert.match(game, /SPAWN_RATE_MULTIPLIER = 1\.1/)
-  assert.match(game, /spawnEvery = Math\.max\(360, 680 - elapsedSeconds \* 4\.2\) \/ SPAWN_RATE_MULTIPLIER/)
+  assert.match(game, /SIM_SPAWN_RATE_MULTIPLIER = 1\.2/)
+  assert.match(game, /NETWORK_SPAWN_WEIGHT = 0\.07/)
+  assert.match(game, /FIVE_G_SPAWN_WEIGHT = 0\.11/)
+  assert.match(game, /SIM_SPAWN_WEIGHT = 0\.82 \* SIM_SPAWN_RATE_MULTIPLIER/)
+  assert.match(game, /TOTAL_SPAWN_WEIGHT = NETWORK_SPAWN_WEIGHT \+ FIVE_G_SPAWN_WEIGHT \+ SIM_SPAWN_WEIGHT/)
+  assert.match(game, /const roll = Math\.random\(\) \* TOTAL_SPAWN_WEIGHT/)
+  assert.match(game, /spawnEvery = Math\.max\(360, 680 - elapsedSeconds \* 4\.2\) \/ TOTAL_SPAWN_WEIGHT/)
   assert.match(game, /speedMultiplier = type === 'sim' \? SIM_SPEED_MULTIPLIER : BONUS_SPEED_MULTIPLIER/)
   assert.match(game, /speed: \(22 \+ Math\.random\(\) \* 12\) \* speedMultiplier/)
+  assert.doesNotMatch(game, /SPAWN_RATE_MULTIPLIER = 1\.1/)
 })
