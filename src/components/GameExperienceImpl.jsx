@@ -20,8 +20,8 @@ function formatTime(seconds) {
   return `00:${String(safe).padStart(2, '0')}`
 }
 
-function SkySim({ className = '' }) {
-  return <span className={`falling-sim supplied-sim-art ${className}`.trim()} aria-hidden="true" />
+function SkyChip({ className = '' }) {
+  return <img className={`falling-chip ${className}`.trim()} src="/sky-assets/chip.png" alt="" draggable="false" aria-hidden="true" />
 }
 
 function CollectibleArtwork({ type }) {
@@ -43,7 +43,7 @@ function CollectibleArtwork({ type }) {
     )
   }
 
-  return <SkySim />
+  return <SkyChip />
 }
 
 function useArcadeAudio() {
@@ -150,9 +150,9 @@ function randomCollectibleType() {
 }
 
 function collectLabel(type) {
-  if (type === '5g') return '+10 SIM'
-  if (type === 'network') return 'SIM ×2'
-  return '+1 SIM'
+  if (type === '5g') return '+10'
+  if (type === 'network') return '×2'
+  return '+1'
 }
 
 export default function GameExperience({ onReset }) {
@@ -282,6 +282,8 @@ export default function GameExperience({ onReset }) {
   const collectItem = useCallback((event, item) => {
     event.preventDefault()
     event.stopPropagation()
+    event.currentTarget.style.pointerEvents = 'none'
+    event.currentTarget.style.opacity = '0'
 
     setCollectibles((current) => current.filter((entry) => entry.id !== item.id))
 
@@ -322,11 +324,8 @@ export default function GameExperience({ onReset }) {
     return (
       <main className="game-intro sky-text-brand" onPointerDown={() => audio.ensureContext()}>
         <div className="game-glow" aria-hidden="true" />
-        <div className="game-logo"><b>sky</b><span>mobile</span></div>
-        <p className="game-kicker">CATCH 'EM ALL</p>
-        <h1>Prendi più SIM possibili prima dello scadere del tempo!</h1>
-        <p className="game-instruction">Tocca direttamente le SIM mentre cadono. Occhio ai bonus 5G e rete.</p>
-        <div className="intro-sim-card"><SkySim className="intro-supplied-sim" /></div>
+        <h1>Prendi i chip e occhio ai bonus!</h1>
+        <div className="intro-chip-card"><SkyChip className="intro-chip-art" /></div>
       </main>
     )
   }
@@ -334,9 +333,7 @@ export default function GameExperience({ onReset }) {
   if (phase === 'countdown') {
     return (
       <main className="game-countdown sky-text-brand" onPointerDown={() => audio.ensureContext()}>
-        <span>Preparati</span>
         <strong key={countdown}>{countdown}</strong>
-        <p>Tocca le SIM per prenderle</p>
       </main>
     )
   }
@@ -346,13 +343,15 @@ export default function GameExperience({ onReset }) {
     return (
       <main className="game-results neutral-results sky-text-brand">
         <div className="results-card neutral-results-card">
-          <div className="result-spark">✦</div>
-          <span>Partita terminata</span>
-          <h1>{simCount}</h1>
-          <p>SIM prese</p>
-          <div className="result-divider" />
-          <div className="result-stat-row"><span>Giga consumati</span><strong>—</strong></div>
-          <div className="final-claim">Con Sky Mobile hai <b>_____ _____.</b></div>
+          <div className="result-chip"><SkyChip className="result-chip-art" /></div>
+          <div className="result-box result-box-score">
+            <span>Punteggio</span>
+            <strong>{simCount}</strong>
+          </div>
+          <div className="result-box result-box-giga">
+            <span>Giga</span>
+            <strong>Con Sky Mobile puoi avere anche giga illimitati</strong>
+          </div>
           {replayAvailable ? (
             <button className="retry-button" type="button" onClick={retry}>Riprova</button>
           ) : (
@@ -368,18 +367,16 @@ export default function GameExperience({ onReset }) {
       <div className="game-field-bg" aria-hidden="true" />
 
       <header className="game-hud game-hud-two">
-        <div><small>SIM PRESE</small><strong>{simCount}</strong></div>
+        <div><small>PUNTEGGIO</small><strong>{simCount}</strong></div>
         <div className={timeLeft <= 10 ? 'urgent' : ''}><small>TEMPO</small><strong>{formatTime(timeLeft)}</strong></div>
       </header>
-
-      <div className="game-copy-strip">Tocca le SIM e i bonus</div>
 
       {collectibles.map((item) => (
         <button
           key={item.id}
           className={`collectible collectible--${item.type}`}
           type="button"
-          aria-label={item.type === 'sim' ? 'Raccogli SIM' : item.type === '5g' ? 'Bonus 5G più 10 SIM' : 'Bonus rete raddoppia SIM'}
+          aria-label={item.type === 'sim' ? 'Raccogli chip' : item.type === '5g' ? 'Bonus 5G più 10 punti' : 'Bonus rete raddoppia il punteggio'}
           onPointerDown={(event) => collectItem(event, item)}
           style={{ left: `${item.x}%`, top: `${item.y}%`, transform: `translate(-50%, -50%) rotate(${item.rotate}deg)` }}
         >
@@ -398,8 +395,6 @@ export default function GameExperience({ onReset }) {
           <i /><i /><i /><i />
         </div>
       ))}
-
-      <div className="tap-game-hint">TOCCA PER PRENDERE</div>
     </main>
   )
 }
