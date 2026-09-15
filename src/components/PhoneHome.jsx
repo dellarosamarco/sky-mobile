@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from 'react'
 import { primeAudio } from '../utils/audio'
 
 const APPS = [
@@ -14,12 +13,12 @@ const APPS = [
   { id: 'teams', label: 'Teams', icon: '/app-icons/teams.jpg' },
   { id: 'xfactor', label: 'X Factor', icon: '/app-icons/xfactor.jpg' },
   { id: 'mysky', label: 'My Sky', icon: '/app-icons/mysky.jpg' },
-  { id: 'skytoday', label: 'Sky Today', icon: '/app-icons/skytoday.svg' },
+  { id: 'skytoday', label: 'Sky Today', icon: '/sky-assets/sky-today.png' },
   { id: 'youtube', label: 'YouTube', icon: '/app-icons/youtube.jpg' },
   { id: 'mysodexo', label: 'My Sodexo', icon: '/app-icons/mysodexo.png' },
   { id: 'mail', label: 'Mail', icon: '/app-icons/mail.jpg' },
   { id: 'google', label: 'Google', icon: '/app-icons/google.jpg' },
-  { id: 'sky', label: "catch 'em all" },
+  { id: 'sky', label: "Catch 'em all" },
   { id: 'copilot365', label: 'Microsoft 365', icon: '/app-icons/copilot365.jpg' },
   { id: 'camera', label: 'Fotocamera', icon: '/app-icons/camera.jpg' },
   { id: 'weather', label: 'Meteo', icon: '/app-icons/weather.jpg' },
@@ -37,7 +36,7 @@ const DOCK_APPS = [
 function CatchEmAllIcon() {
   return (
     <span className="ios-app-icon sky-home-icon catch-em-all-icon" aria-hidden="true">
-      <span className="falling-sim supplied-sim-art catch-em-all-sim" />
+      <img className="catch-em-all-chip" src="/sky-assets/chip.png" alt="" draggable="false" />
     </span>
   )
 }
@@ -50,53 +49,8 @@ function AppleArtwork({ src, label }) {
   )
 }
 
-function CellularIcon() {
-  return (
-    <svg className="iphone-cellular" viewBox="0 0 18 12" aria-hidden="true">
-      <rect x="0" y="7" width="3" height="5" rx="1" />
-      <rect x="5" y="5" width="3" height="7" rx="1" />
-      <rect x="10" y="2.5" width="3" height="9.5" rx="1" />
-      <rect x="15" y="0" width="3" height="12" rx="1" />
-    </svg>
-  )
-}
-
-function WifiIcon() {
-  return (
-    <svg className="iphone-wifi" viewBox="0 0 20 14" aria-hidden="true">
-      <path d="M1.5 4.1a13 13 0 0 1 17 0" />
-      <path d="M4.5 7.3a8.6 8.6 0 0 1 11 0" />
-      <path d="M7.6 10.3a4 4 0 0 1 4.8 0" />
-      <circle cx="10" cy="12.1" r="1.15" />
-    </svg>
-  )
-}
-
-function BatteryIcon() {
-  return (
-    <span className="iphone-battery" aria-hidden="true">
-      <span className="iphone-battery-shell">
-        <span className="iphone-battery-level" />
-        <span className="iphone-battery-value">78</span>
-      </span>
-      <span className="iphone-battery-cap" />
-    </span>
-  )
-}
-
 export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
   const isGame = mode === 'game'
-  const [now, setNow] = useState(new Date())
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 30000)
-    return () => window.clearInterval(timer)
-  }, [])
-
-  const time = useMemo(
-    () => now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
-    [now],
-  )
 
   const openGame = () => {
     primeAudio()
@@ -104,17 +58,8 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
   }
 
   return (
-    <main className="phone-home">
+    <main className="phone-home phone-home--no-statusbar">
       <div className="phone-home-wallpaper" aria-hidden="true" />
-
-      <header className="phone-statusbar iphone-statusbar" aria-label={`Ora ${time}`}>
-        <strong className="iphone-status-time">{time}</strong>
-        <div className="iphone-status-right" aria-hidden="true">
-          <CellularIcon />
-          <WifiIcon />
-          <BatteryIcon />
-        </div>
-      </header>
 
       <section className="iphone-home-grid" aria-label="Home smartphone">
         {APPS.map((app) => {
@@ -122,14 +67,14 @@ export default function PhoneHome({ mode = 'game', onOpen, overlay = null }) {
             return (
               <div className="ios-app-cell sky-cell" key={app.id}>
                 {isGame ? (
-                  <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri catch 'em all">
+                  <button className="ios-app-button sky-app-launcher" type="button" onClick={openGame} aria-label="Apri Catch 'em all">
                     <CatchEmAllIcon />
-                    <span className="ios-app-label">catch 'em all</span>
+                    <span className="ios-app-label">Catch 'em all</span>
                   </button>
                 ) : (
                   <div className="ios-app-button is-static" aria-hidden="true">
                     <CatchEmAllIcon />
-                    <span className="ios-app-label">catch 'em all</span>
+                    <span className="ios-app-label">Catch 'em all</span>
                   </div>
                 )}
               </div>
