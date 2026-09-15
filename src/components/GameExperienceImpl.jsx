@@ -293,7 +293,8 @@ export default function GameExperience({ onReset }) {
     setSimCount(nextTotal)
     audio.collect(item.type)
 
-    const rect = event.currentTarget.getBoundingClientRect()
+    const effectX = event.clientX
+    const effectY = event.clientY
     const effectId = nextEffectIdRef.current++
     setEffects((current) => [
       ...current,
@@ -301,8 +302,8 @@ export default function GameExperience({ onReset }) {
         id: effectId,
         type: item.type,
         label: collectLabel(item.type),
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
+        x: effectX,
+        y: effectY,
       },
     ])
 
