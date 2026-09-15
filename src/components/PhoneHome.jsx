@@ -4,7 +4,7 @@ const APPS = [
   { id: 'maps', label: 'Mappe', icon: '/app-icons/maps.jpg' },
   { id: 'appstore', label: 'App Store', icon: '/app-icons/appstore.svg' },
   { id: 'podcasts', label: 'Podcast', icon: '/app-icons/podcasts.jpg' },
-  { id: 'settings', label: 'Impostazioni', icon: '/app-icons/settings.svg' },
+  { id: 'settings', label: 'Impostazioni', icon: '/app-icons/settings-clean.svg' },
   { id: 'files', label: 'File', icon: '/app-icons/files.jpg' },
   { id: 'whatsapp', label: 'WhatsApp', icon: '/app-icons/whatsapp.jpg' },
   { id: 'instagram', label: 'Instagram', icon: '/app-icons/instagram.jpg' },
