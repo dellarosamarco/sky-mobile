@@ -7,8 +7,9 @@ const COUNTDOWN_SECONDS = 3
 const RESULT_SECONDS = 5
 const INTRO_MS = 8300
 const FINAL_WARNING_SECONDS = 5
-const SIM_SPEED_MULTIPLIER = 1.26
-const BONUS_SPEED_MULTIPLIER = 1.4
+const SIM_SPEED_MULTIPLIER = 1.2726
+const FIVE_G_SPEED_MULTIPLIER = 1.47
+const X2_SPEED_MULTIPLIER = 1.61
 const SIM_SPAWN_RATE_MULTIPLIER = 1.2
 const NETWORK_SPAWN_WEIGHT = 0.07
 const FIVE_G_SPAWN_WEIGHT = 0.11
@@ -249,7 +250,7 @@ export default function GameExperience({ onReset }) {
       if (now - lastSpawnRef.current >= spawnEvery) {
         lastSpawnRef.current = now
         const type = randomCollectibleType()
-        const speedMultiplier = type === 'sim' ? SIM_SPEED_MULTIPLIER : BONUS_SPEED_MULTIPLIER
+        const speedMultiplier = type === 'sim' ? SIM_SPEED_MULTIPLIER : type === '5g' ? FIVE_G_SPEED_MULTIPLIER : X2_SPEED_MULTIPLIER
         setCollectibles((current) => [
           ...current,
           {
