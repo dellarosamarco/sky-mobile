@@ -6,7 +6,7 @@ await mkdir(outDir, { recursive: true })
 
 const assets = [
   ['Grafica Chip - Sky_Mobile.png', 'chip.png'],
-  ['ChatGPT Image 15 set 2026, 11_49_06.png', 'sky-today.png'],
+  ['ChatGPT Image 15 set 2026, 13_12_15.png', 'sky-today.png'],
   ['SKYTEXT-REGULAR.TTF', 'skytext-regular.ttf'],
   ['SKYTEXT-MEDIUM.TTF', 'skytext-medium.ttf'],
 ]
