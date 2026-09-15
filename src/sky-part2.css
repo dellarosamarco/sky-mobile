@@ -47,18 +47,101 @@
 }
 
 .intro-chip-card {
+  position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
   width: clamp(130px, 30vw, 220px);
   aspect-ratio: 1;
   margin: 0 auto;
+  animation: intro-chip-float 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.intro-chip-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.36) 0%, rgba(88,190,255,.30) 34%, rgba(88,190,255,.12) 56%, transparent 76%);
+  filter: blur(18px);
+  opacity: .84;
+  pointer-events: none;
+  animation: intro-chip-glow 2.2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.intro-chip-card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 4%;
+  width: 68%;
+  height: 13%;
+  border-radius: 50%;
+  background: rgba(0,0,0,.24);
+  filter: blur(12px);
+  transform: translateX(-50%);
+  opacity: .58;
+  pointer-events: none;
+  animation: intro-chip-shadow 2.8s ease-in-out infinite;
 }
 
 .intro-chip-art {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 18px 28px rgba(0,0,0,.28));
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.28)) drop-shadow(0 0 18px rgba(88,190,255,.28));
+  animation: intro-chip-pop 2.2s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+@keyframes intro-chip-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes intro-chip-glow {
+  0%, 100% {
+    transform: scale(.94);
+    opacity: .62;
+  }
+
+  50% {
+    transform: scale(1.10);
+    opacity: 1;
+  }
+}
+
+@keyframes intro-chip-pop {
+  0%, 100% {
+    transform: scale(1) rotate(-2deg);
+    filter: drop-shadow(0 18px 28px rgba(0,0,0,.28)) drop-shadow(0 0 18px rgba(88,190,255,.28));
+  }
+
+  50% {
+    transform: scale(1.055) rotate(2deg);
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,.24)) drop-shadow(0 0 30px rgba(88,190,255,.45));
+  }
+}
+
+@keyframes intro-chip-shadow {
+  0%, 100% {
+    transform: translateX(-50%) scale(.9);
+    opacity: .56;
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.08);
+    opacity: .30;
+  }
 }
 
 .game-countdown {
@@ -135,6 +218,15 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-chip-card,
+  .intro-chip-card::before,
+  .intro-chip-card::after,
+  .intro-chip-art {
+    animation: none;
+  }
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
