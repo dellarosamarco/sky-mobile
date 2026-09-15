@@ -48,6 +48,16 @@ test('Sky part 2 game copy, chip artwork and results layout are implemented', as
   assert.match(game, /event\.currentTarget\.style\.pointerEvents = 'none'/)
 })
 
+test('collecting a chip avoids synchronous layout reads that can cause a frame hitch', async () => {
+  const game = await read('src/components/GameExperienceImpl.jsx')
+
+  assert.doesNotMatch(game, /getBoundingClientRect\(/)
+  assert.match(game, /const effectX = event\.clientX/)
+  assert.match(game, /const effectY = event\.clientY/)
+  assert.match(game, /x: effectX/)
+  assert.match(game, /y: effectY/)
+})
+
 test('intro chip uses glow, float and pulse animation without affecting gameplay collectibles', async () => {
   const css = await read('src/sky-part2.css')
 
