@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "prepare:icons": "node scripts/fetch-apple-icons.mjs",
+    "prepare:sky": "node scripts/prepare-sky-assets.mjs",
     "test": "node --test",
-    "dev": "npm run prepare:icons && vite",
-    "build": "npm test && npm run prepare:icons && vite build",
+    "dev": "npm run prepare:icons && npm run prepare:sky && vite",
+    "build": "npm test && npm run prepare:icons && npm run prepare:sky && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
