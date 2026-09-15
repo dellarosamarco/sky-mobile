@@ -1,0 +1,57 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
+
+test('Sky part 2 assets and home feedback are wired to the supplied materials', async () => {
+  const [pkg, main, home, iconScript, assetScript, fonts] = await Promise.all([
+    read('package.json'),
+    read('src/main.jsx'),
+    read('src/components/PhoneHome.jsx'),
+    read('scripts/fetch-apple-icons.mjs'),
+    read('scripts/prepare-sky-assets.mjs'),
+    read('src/sky-fonts.css'),
+  ])
+
+  assert.match(pkg, /"prepare:sky"/)
+  assert.match(pkg, /npm run prepare:sky/)
+  assert.match(assetScript, /Grafica Chip - Sky_Mobile\.png/)
+  assert.match(assetScript, /Icona Sky Today\.png/)
+  assert.match(assetScript, /SKYTEXT-REGULAR\.TTF/)
+  assert.match(assetScript, /SKYTEXT-MEDIUM\.TTF/)
+  assert.match(main, /import '\.\/sky-fonts\.css'/)
+  assert.match(fonts, /@font-face[\s\S]*Sky Text[\s\S]*skytext-regular\.ttf/)
+  assert.match(fonts, /@font-face[\s\S]*font-weight:\s*500[\s\S]*skytext-medium\.ttf/)
+
+  assert.match(home, /skytoday'.*\/sky-assets\/sky-today\.png/)
+  assert.match(home, /label: "Catch 'em all"/)
+  assert.match(home, /\/sky-assets\/chip\.png/)
+  assert.doesNotMatch(home, /phone-statusbar|iphone-status-time|CellularIcon|WifiIcon|BatteryIcon/)
+  assert.match(iconScript, /writeFile\(path\.join\(outDir, 'settings\.svg'\), settingsFallback\)/)
+  assert.doesNotMatch(iconScript, /Settings%20\(iOS\)\.png/)
+})
+
+test('Sky part 2 game copy, chip artwork and results layout are implemented', async () => {
+  const game = await read('src/components/GameExperienceImpl.jsx')
+
+  assert.match(game, /Prendi i chip e occhio ai bonus!/) 
+  assert.match(game, /\/sky-assets\/chip\.png/)
+  assert.doesNotMatch(game, /CATCH 'EM ALL|Tocca direttamente le SIM|Preparati|Tocca le SIM per prenderle|game-copy-strip|tap-game-hint/)
+  assert.match(game, /<small>PUNTEGGIO<\/small>/)
+  assert.doesNotMatch(game, /Partita terminata|SIM prese|Giga consumati|Con Sky Mobile hai/)
+  assert.match(game, /result-box[\s\S]*Punteggio[\s\S]*\{simCount\}/)
+  assert.match(game, /result-box[\s\S]*Giga[\s\S]*Con Sky Mobile puoi avere anche giga illimitati/)
+  assert.match(game, /event\.currentTarget\.style\.pointerEvents = 'none'/)
+})
+
+test('Sky part 2 video call feedback is implemented without replacing pending talent content', async () => {
+  const video = await read('src/components/VideoCallExperience.jsx')
+
+  assert.doesNotMatch(video, /<p>Scorri per rispondere<\/p>/)
+  assert.match(video, />Scorri per rispondere<\/span>/)
+  assert.match(video, /<span aria-hidden="true">📞<\/span>/)
+  assert.match(video, /ended-icon[\s\S]*\/sky-assets\/chip\.png/)
+  assert.match(video, /Talent 2/)
+  assert.match(video, /copy definitiva da inserire/)
+})
