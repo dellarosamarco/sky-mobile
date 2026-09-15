@@ -11,10 +11,10 @@ test('every results screen auto-resets to the PIN unless the user retries first'
   assert.match(game, /if \(phase !== 'results'\) return undefined[\s\S]{0,240}setTimeout\(\(\) => onReset\?\.\(\), RESULT_SECONDS \* 1000\)/)
 })
 
-test('SIM spawn increases 20 percent while bonus spawn stays unchanged and requested speeds are preserved', async () => {
+test('SIM spawn stays 20 percent higher while SIM speed is another 5 percent faster and bonus speed stays unchanged', async () => {
   const game = await read('src/components/GameExperienceImpl.jsx')
 
-  assert.match(game, /SIM_SPEED_MULTIPLIER = 1\.2/)
+  assert.match(game, /SIM_SPEED_MULTIPLIER = 1\.26/)
   assert.match(game, /BONUS_SPEED_MULTIPLIER = 1\.4/)
   assert.match(game, /SIM_SPAWN_RATE_MULTIPLIER = 1\.2/)
   assert.match(game, /NETWORK_SPAWN_WEIGHT = 0\.07/)
