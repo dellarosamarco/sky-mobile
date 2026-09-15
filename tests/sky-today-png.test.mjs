@@ -2,15 +2,16 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 
-const file = new URL('../public/app-icons/skytoday.svg', import.meta.url)
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('Sky Today artwork is clean vector SVG without embedded screenshot artifacts', async () => {
-  const svg = await readFile(file, 'utf8')
+test('Sky Today uses the client-supplied PNG asset', async () => {
+  const [home, assetScript] = await Promise.all([
+    read('src/components/PhoneHome.jsx'),
+    read('scripts/prepare-sky-assets.mjs'),
+  ])
 
-  assert.match(svg, /^<svg[\s>]/)
-  assert.doesNotMatch(svg, /<image\b/)
-  assert.doesNotMatch(svg, /data:image\//)
-  assert.match(svg, /<rect[^>]+rx=/)
-  assert.match(svg, />sky<\/text>/)
-  assert.match(svg, />today<\/text>/)
+  assert.match(assetScript, /Icona Sky Today\.png/)
+  assert.match(assetScript, /sky-today\.png/)
+  assert.match(home, /\/sky-assets\/sky-today\.png/)
+  assert.doesNotMatch(home, /\/app-icons\/skytoday\.svg/)
 })
