@@ -5,13 +5,13 @@ import { readFile } from 'node:fs/promises'
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('Sky part 2 assets and home feedback are wired to the supplied materials', async () => {
-  const [pkg, main, home, iconScript, assetScript, fonts] = await Promise.all([
+  const [pkg, main, home, assetScript, fonts, settings] = await Promise.all([
     read('package.json'),
     read('src/main.jsx'),
     read('src/components/PhoneHome.jsx'),
-    read('scripts/fetch-apple-icons.mjs'),
     read('scripts/prepare-sky-assets.mjs'),
     read('src/sky-fonts.css'),
+    read('public/app-icons/settings-clean.svg'),
   ])
 
   assert.match(pkg, /"prepare:sky"/)
@@ -21,21 +21,22 @@ test('Sky part 2 assets and home feedback are wired to the supplied materials', 
   assert.match(assetScript, /SKYTEXT-REGULAR\.TTF/)
   assert.match(assetScript, /SKYTEXT-MEDIUM\.TTF/)
   assert.match(main, /import '\.\/sky-fonts\.css'/)
+  assert.match(main, /import '\.\/sky-part2\.css'/)
   assert.match(fonts, /@font-face[\s\S]*Sky Text[\s\S]*skytext-regular\.ttf/)
   assert.match(fonts, /@font-face[\s\S]*font-weight:\s*500[\s\S]*skytext-medium\.ttf/)
 
   assert.match(home, /skytoday'.*\/sky-assets\/sky-today\.png/)
+  assert.match(home, /settings'.*\/app-icons\/settings-clean\.svg/)
   assert.match(home, /label: "Catch 'em all"/)
   assert.match(home, /\/sky-assets\/chip\.png/)
   assert.doesNotMatch(home, /phone-statusbar|iphone-status-time|CellularIcon|WifiIcon|BatteryIcon/)
-  assert.match(iconScript, /writeFile\(path\.join\(outDir, 'settings\.svg'\), settingsFallback\)/)
-  assert.doesNotMatch(iconScript, /Settings%20\(iOS\)\.png/)
+  assert.match(settings, /^<svg[\s>]/)
 })
 
 test('Sky part 2 game copy, chip artwork and results layout are implemented', async () => {
   const game = await read('src/components/GameExperienceImpl.jsx')
 
-  assert.match(game, /Prendi i chip e occhio ai bonus!/) 
+  assert.match(game, /Prendi i chip e occhio ai bonus!/)
   assert.match(game, /\/sky-assets\/chip\.png/)
   assert.doesNotMatch(game, /CATCH 'EM ALL|Tocca direttamente le SIM|Preparati|Tocca le SIM per prenderle|game-copy-strip|tap-game-hint/)
   assert.match(game, /<small>PUNTEGGIO<\/small>/)
@@ -52,6 +53,8 @@ test('Sky part 2 video call feedback is implemented without replacing pending ta
   assert.match(video, />Scorri per rispondere<\/span>/)
   assert.match(video, /<span aria-hidden="true">📞<\/span>/)
   assert.match(video, /ended-icon[\s\S]*\/sky-assets\/chip\.png/)
+  assert.match(video, /aspectRatio: \{ ideal: 9 \/ 16 \}/)
+  assert.match(video, /orientation\?\.lock\?\.\('portrait-primary'\)/)
   assert.match(video, /Talent 2/)
   assert.match(video, /copy definitiva da inserire/)
 })
