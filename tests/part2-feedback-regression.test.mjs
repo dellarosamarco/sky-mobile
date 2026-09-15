@@ -48,6 +48,20 @@ test('Sky part 2 game copy, chip artwork and results layout are implemented', as
   assert.match(game, /event\.currentTarget\.style\.pointerEvents = 'none'/)
 })
 
+test('intro chip uses glow, float and pulse animation without affecting gameplay collectibles', async () => {
+  const css = await read('src/sky-part2.css')
+
+  assert.match(css, /\.intro-chip-card::before/)
+  assert.match(css, /animation:\s*intro-chip-float/)
+  assert.match(css, /animation:\s*intro-chip-glow/)
+  assert.match(css, /animation:\s*intro-chip-pop/)
+  assert.match(css, /@keyframes intro-chip-float/)
+  assert.match(css, /@keyframes intro-chip-glow/)
+  assert.match(css, /@keyframes intro-chip-pop/)
+  assert.match(css, /drop-shadow\([^)]*rgba\(88,190,255/)
+  assert.doesNotMatch(css, /\.collectible--sim[^}]*animation:\s*intro-chip-/s)
+})
+
 test('Sky part 2 video call feedback is implemented without replacing pending talent content', async () => {
   const video = await read('src/components/VideoCallExperience.jsx')
 
