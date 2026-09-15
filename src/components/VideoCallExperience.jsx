@@ -128,12 +128,22 @@ export default function VideoCallExperience({ onReset }) {
     }
     try {
       setCameraState('loading')
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'user',
+          aspectRatio: { ideal: 9 / 16 },
+        },
+        audio: false,
+      })
       streamRef.current = stream
       setCameraState('ready')
     } catch {
       setCameraState('denied')
     }
+  }, [])
+
+  useEffect(() => {
+    screen.orientation?.lock?.('portrait-primary').catch?.(() => {})
   }, [])
 
   useEffect(() => {
@@ -276,10 +286,9 @@ export default function VideoCallExperience({ onReset }) {
         </div>
 
         <div className="slide-answer-wrap">
-          <p>Scorri per rispondere</p>
           <div className="slide-answer-track" ref={slideTrackRef}>
             <div className="slide-answer-fill" style={{ width: `${Math.max(12, slideProgress * 100)}%` }} />
-            <span className="slide-answer-label" style={{ opacity: Math.max(0, 1 - slideProgress * 1.7) }}>scorri per rispondere</span>
+            <span className="slide-answer-label" style={{ opacity: Math.max(0, 1 - slideProgress * 1.7) }}>Scorri per rispondere</span>
             <button
               ref={slideKnobRef}
               className="slide-answer-knob"
@@ -291,7 +300,7 @@ export default function VideoCallExperience({ onReset }) {
               onPointerCancel={finishSlide}
               style={{ '--slide-progress': slideProgress }}
             >
-              <span aria-hidden="true">☎</span>
+              <span aria-hidden="true">📞</span>
             </button>
           </div>
         </div>
@@ -304,7 +313,7 @@ export default function VideoCallExperience({ onReset }) {
   if (phase === 'ended') {
     return (
       <main className="call-ended">
-        <div className="ended-icon">✓</div>
+        <div className="ended-icon ended-chip"><img src="/sky-assets/chip.png" alt="" draggable="false" /></div>
         <h1>{endingCopy}</h1>
         <p>Continua verso la prossima tappa.</p>
         <small>La postazione si resetterà automaticamente.</small>
