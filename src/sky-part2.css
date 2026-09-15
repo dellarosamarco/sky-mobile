@@ -1,0 +1,173 @@
+/* Sky Mobile feedback — part 2. Loaded last on purpose. */
+
+.phone-home--no-statusbar .iphone-home-grid {
+  margin-top: max(28px, calc(env(safe-area-inset-top) + 18px));
+}
+
+.catch-em-all-icon {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(232,244,255,.95)) !important;
+}
+
+.catch-em-all-chip {
+  display: block;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,.18));
+}
+
+.falling-chip {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.collectible--sim .falling-chip {
+  width: 92%;
+  height: 92%;
+  margin: auto;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.22));
+}
+
+.game-intro {
+  gap: clamp(18px, 3vh, 38px);
+}
+
+.game-intro h1 {
+  max-width: 760px;
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.intro-chip-card {
+  display: grid;
+  place-items: center;
+  width: clamp(130px, 30vw, 220px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.intro-chip-art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.28));
+}
+
+.game-countdown {
+  display: grid;
+  place-items: center;
+}
+
+.game-countdown > strong {
+  margin: 0;
+}
+
+.result-chip {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 20px;
+}
+
+.result-chip-art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,.25));
+}
+
+.result-box {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 390px);
+  margin: 0 auto 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  background: rgba(255,255,255,.07);
+  text-align: left;
+}
+
+.result-box > span {
+  font-size: 15px;
+  font-weight: 500;
+  opacity: .76;
+}
+
+.result-box > strong {
+  font-weight: 500;
+}
+
+.result-box-score > strong {
+  font-size: clamp(46px, 12vw, 72px);
+  line-height: 1;
+}
+
+.result-box-giga > strong {
+  font-size: clamp(18px, 4.5vw, 26px);
+  line-height: 1.22;
+}
+
+.ended-chip {
+  overflow: visible;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.ended-chip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.25));
+}
+
+.self-view video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .phone-home--no-statusbar .iphone-home-grid {
+    margin-top: 72px;
+  }
+
+  .intro-chip-card {
+    width: clamp(250px, 18vw, 390px);
+  }
+
+  .result-chip {
+    width: clamp(150px, 11vw, 220px);
+    height: clamp(150px, 11vw, 220px);
+    margin-bottom: 34px;
+  }
+
+  .result-box {
+    width: min(74%, 760px);
+    gap: 14px;
+    padding: 28px 34px;
+    border-radius: 30px;
+  }
+
+  .result-box > span {
+    font-size: clamp(28px, 2vw, 42px);
+  }
+
+  .result-box-score > strong {
+    font-size: clamp(82px, 6vw, 128px);
+  }
+
+  .result-box-giga > strong {
+    font-size: clamp(32px, 2.3vw, 48px);
+  }
+}
