@@ -4,16 +4,16 @@ import { readFile } from 'node:fs/promises'
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('the supplied SIM artwork is reused in gameplay, intro and the catch em all launcher', async () => {
-  const [game, home, artwork] = await Promise.all([
+test('the supplied Chip artwork replaces the old SIM artwork in game and launcher', async () => {
+  const [game, home, assetScript] = await Promise.all([
     read('src/components/GameExperienceImpl.jsx'),
     read('src/components/PhoneHome.jsx'),
-    read('src/sim-artwork.css'),
+    read('scripts/prepare-sky-assets.mjs'),
   ])
 
-  assert.match(artwork, /data:image\/webp;base64/)
-  assert.match(game, /falling-sim supplied-sim-art/)
-  assert.match(home, /falling-sim supplied-sim-art catch-em-all-sim/)
-  assert.doesNotMatch(game, /collectible-sim-art/)
-  assert.doesNotMatch(home, /catch-em-all\.svg/)
+  assert.match(assetScript, /Grafica Chip - Sky_Mobile\.png/)
+  assert.match(game, /\/sky-assets\/chip\.png/)
+  assert.match(home, /\/sky-assets\/chip\.png/)
+  assert.doesNotMatch(game, /falling-sim supplied-sim-art|collectible-sim-art/)
+  assert.doesNotMatch(home, /falling-sim supplied-sim-art|catch-em-all\.svg/)
 })
