@@ -23,7 +23,7 @@ test('Sky part 2 assets and home feedback are wired to the supplied materials', 
   assert.match(main, /import '\.\/sky-fonts\.css'/)
   assert.match(main, /import '\.\/sky-part2\.css'/)
   assert.match(fonts, /@font-face[\s\S]*Sky Text[\s\S]*skytext-regular\.ttf/)
-  assert.match(fonts, /@font-face[\s\S]*font-weight:\s*500[\s\S]*skytext-medium\.ttf/)
+  assert.match(fonts, /@font-face[\s\S]*skytext-medium\.ttf[\s\S]*font-weight:\s*500/)
 
   assert.match(home, /skytoday'.*\/sky-assets\/sky-today\.png/)
   assert.match(home, /settings'.*\/app-icons\/settings-clean\.svg/)
