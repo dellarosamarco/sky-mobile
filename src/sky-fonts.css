@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Sky Text";
+  src: url('/sky-assets/skytext-regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sky Text";
+  src: url('/sky-assets/skytext-medium.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
