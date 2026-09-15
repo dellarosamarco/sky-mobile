@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('Home uses latest supplied Sky Today, My Sodexo and clean Settings artwork', async () => {
+test('Home uses final supplied Sky Today, My Sodexo and clean Settings artwork', async () => {
   const [home, iconScript, assetScript, settings] = await Promise.all([
     read('src/components/PhoneHome.jsx'),
     read('scripts/fetch-apple-icons.mjs'),
@@ -16,7 +16,8 @@ test('Home uses latest supplied Sky Today, My Sodexo and clean Settings artwork'
   assert.match(home, /id: 'mysodexo'.*icon: '\/app-icons\/mysodexo\.png'/)
   assert.match(home, /id: 'skytoday'.*icon: '\/sky-assets\/sky-today\.png'/)
   assert.match(home, /id: 'settings'.*icon: '\/app-icons\/settings-clean\.svg'/)
-  assert.match(assetScript, /ChatGPT Image 15 set 2026, 11_49_06\.png/)
+  assert.match(assetScript, /ChatGPT Image 15 set 2026, 13_12_15\.png/)
+  assert.doesNotMatch(assetScript, /ChatGPT Image 15 set 2026, 11_49_06\.png/)
   assert.doesNotMatch(assetScript, /Icona Sky Today\.png/)
   assert.match(settings, /^<svg[\s>]/)
   assert.match(iconScript, /1441293148/)
