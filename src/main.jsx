@@ -17,6 +17,7 @@ import './interaction-polish.css'
 import './dynamic-background.css'
 import './sky-fonts.css'
 import './sky-rework.css'
+import './sky-part2.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
