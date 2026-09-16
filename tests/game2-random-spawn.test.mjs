@@ -29,3 +29,17 @@ test('/game2 keeps the game flow but uses random static collectibles with a two 
   assert.match(game2, /Punteggio/)
   assert.match(game2, /Con Sky Mobile puoi avere anche giga illimitati/)
 })
+
+test('/game2 collectibles fade in and out, float subtly and do not render the falling-game shadow', async () => {
+  const [game2, css] = await Promise.all([
+    read('src/components/GameExperience2Impl.jsx'),
+    read('src/game-rules.css'),
+  ])
+
+  assert.match(game2, /className=\{`collectible game2-collectible collectible--\$\{item\.type\}`\}/)
+  assert.match(css, /\.game2-collectible\s*\{[\s\S]*?filter:\s*none[\s\S]*?animation:\s*game2-collectible-life\s+2s/)
+  assert.match(css, /\.game2-collectible\s*>\s*\.falling-chip[\s\S]*?animation:\s*game2-chip-float/)
+  assert.match(css, /@keyframes game2-collectible-life/)
+  assert.match(css, /@keyframes game2-chip-float/)
+  assert.match(css, /\.game2-collectible\.collectible--sim\s+\.falling-chip\s*\{[\s\S]*?filter:\s*none/)
+})
