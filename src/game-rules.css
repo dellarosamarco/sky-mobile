@@ -40,6 +40,14 @@
   will-change: top, transform;
 }
 
+.collectible--hitbox-105::before {
+  content: "";
+  position: absolute;
+  inset: -2.5%;
+  background: transparent;
+  pointer-events: auto;
+}
+
 .collectible:active {
   scale: .92;
 }
