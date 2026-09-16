@@ -58,6 +58,46 @@
   aspect-ratio: 1;
 }
 
+.game2-collectible {
+  filter: none;
+  opacity: 0;
+  animation: game2-collectible-life 2s ease-in-out forwards;
+  will-change: opacity, scale;
+}
+
+.game2-collectible > .falling-chip,
+.game2-collectible > .bonus-art {
+  animation: game2-chip-float .72s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.game2-collectible.collectible--sim .falling-chip {
+  filter: none;
+}
+
+@keyframes game2-collectible-life {
+  0% { opacity: 0; scale: .94; }
+  12% { opacity: 1; scale: 1.02; }
+  78% { opacity: 1; scale: 1; }
+  100% { opacity: 0; scale: .97; }
+}
+
+@keyframes game2-chip-float {
+  0% { transform: translateY(-2px) rotate(-1deg); }
+  100% { transform: translateY(2px) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game2-collectible {
+    animation: game2-collectible-life 2s linear forwards;
+  }
+
+  .game2-collectible > .falling-chip,
+  .game2-collectible > .bonus-art {
+    animation: none;
+  }
+}
+
 .collectible-sim-art {
   position: relative;
   display: block;
