@@ -364,7 +364,7 @@ export default function GameExperience2({ onReset }) {
       {collectibles.map((item) => (
         <button
           key={item.id}
-          className={`collectible collectible--${item.type}`}
+          className={`collectible game2-collectible collectible--${item.type}`}
           type="button"
           aria-label={item.type === 'sim' ? 'Raccogli chip' : item.type === '5g' ? 'Bonus 5G più 10 punti' : 'Bonus rete raddoppia il punteggio'}
           onPointerDown={(event) => collectItem(event, item)}
