@@ -1,0 +1,14 @@
+/* Compensate the webcam when the LG One:Quick Flex is physically rotated to portrait. */
+@media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
+  .self-view video {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(100% / .76);
+    height: 76%;
+    max-width: none;
+    object-fit: cover;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(90deg) scaleY(-1);
+  }
+}
