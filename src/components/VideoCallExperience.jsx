@@ -7,7 +7,7 @@ const TALENTS = [
     id: 'talent-a',
     name: 'Alessandro Del Piero',
     avatar: 'ADP',
-    avatarImage: '/media/talent-a/avatar.jpg',
+    avatarImage: '/media/talent-a/avatar_2.jpg',
     intro: '/media/talent-a/intro.mp4',
     correct: '/media/talent-a/correct.mp4',
     wrong: '/media/talent-a/wrong.mp4',
