@@ -19,6 +19,7 @@ import './sky-fonts.css'
 import './sky-rework.css'
 import './sky-part2.css'
 import './videocall-camera-fix.css'
+import './incoming-video-background.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
