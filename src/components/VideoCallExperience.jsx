@@ -5,11 +5,11 @@ import { getAudioContext } from '../utils/audio'
 const TALENTS = [
   {
     id: 'talent-a',
-    name: 'Mario',
-    avatar: 'M',
-    intro: '/media/talent-a/intro.mp4',
-    correct: '/media/talent-a/correct.mp4',
-    wrong: '/media/talent-a/wrong.mp4',
+    name: 'Alessandro Del Piero',
+    avatar: 'ADP',
+    intro: 'https://sky-game-bay.vercel.app/media/talent-a/intro.mp4',
+    correct: 'https://sky-game-bay.vercel.app/media/talent-a/correct.mp4',
+    wrong: 'https://sky-game-bay.vercel.app/media/talent-a/wrong.mp4',
   },
   {
     id: 'talent-b',
