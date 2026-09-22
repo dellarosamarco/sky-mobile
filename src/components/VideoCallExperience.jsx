@@ -406,20 +406,14 @@ export default function VideoCallExperience({ onReset }) {
         <div className="question-overlay">
           <section className="question-card">
             <h2>{question.text}</h2>
-            <div className="question-options">
-              {question.answers.map((choice) => (
-                <button key={choice.id} type="button" onClick={() => answer(choice.correct)}>{choice.label}</button>
+            <div className="answer-grid">
+              {question.answers.map((option) => (
+                <button key={option.id} type="button" onClick={() => answer(option.correct)}>{option.label}</button>
               ))}
             </div>
           </section>
         </div>
       )}
-
-      <div className="call-controls" aria-hidden="true">
-        <span>◉</span>
-        <span>🎙</span>
-        <span>▣</span>
-      </div>
 
       <div className="ios-home-indicator" aria-hidden="true" />
     </main>
