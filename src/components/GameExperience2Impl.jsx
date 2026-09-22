@@ -314,7 +314,7 @@ export default function GameExperience2({ onReset }) {
     return (
       <main className="game-intro sky-text-brand" onPointerDown={() => audio.ensureContext()}>
         <div className="game-glow" aria-hidden="true" />
-        <h1>Prendi i chip e occhio ai bonus!</h1>
+        <h1>prendi i chip<br />e occhio ai bonus</h1>
         <div className="intro-chip-card"><SkyChip className="intro-chip-art" /></div>
       </main>
     )
