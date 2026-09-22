@@ -25,7 +25,7 @@ test('/game2 keeps the game flow but uses random static collectibles with a two 
   assert.match(game2, /now - item\.spawnedAt < COLLECTIBLE_LIFETIME_MS/)
   assert.doesNotMatch(game2, /item\.y \+ item\.speed/)
   assert.doesNotMatch(game2, /speed:\s*\(22 \+ Math\.random\(\) \* 12\)/)
-  assert.match(game2, /Prendi i chip e occhio ai bonus!/)
+  assert.match(game2, /<h1>prendi i chip<br \/>e occhio ai bonus<\/h1>/)
   assert.match(game2, /Punteggio/)
   assert.match(game2, /Con Sky Mobile puoi avere anche giga illimitati/)
 })
