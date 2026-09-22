@@ -1,0 +1,21 @@
+.incoming-talent-backdrop {
+  overflow: hidden;
+}
+
+.incoming-talent-video {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(24px);
+  transform: scale(1.06);
+  opacity: .9;
+  pointer-events: none;
+}
+
+.incoming-talent-backdrop:has(.incoming-talent-video)::before,
+.incoming-talent-backdrop:has(.incoming-talent-video) > span {
+  display: none;
+}
