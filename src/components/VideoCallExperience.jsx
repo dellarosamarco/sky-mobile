@@ -68,8 +68,8 @@ const QUESTIONS = [
     id: 'sky-mobile-6',
     text: 'Chi ha Sky Mobile Powered by Fastweb può passare alla nuova offerta Sky Mobile?',
     answers: [
-      { id: 'a', label: 'Sì, in ogni momento e da qualsiasi canale', correct: false },
-      { id: 'b', label: 'No, ma sarà possibile in futuro', correct: true },
+      { id: 'a', label: 'Sì, in ogni momento e da qualsiasi canale', correct: true },
+      { id: 'b', label: 'No, ma sarà possibile in futuro', correct: false },
     ],
   },
   {
