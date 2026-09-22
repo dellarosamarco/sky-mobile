@@ -99,6 +99,25 @@
   text-shadow: 0 2px 18px rgba(0,0,0,.5);
 }
 
+.incoming-caller-photo-wrap {
+  width: clamp(138px, 36vw, 224px);
+  aspect-ratio: 1;
+  margin: 0 auto 22px;
+  padding: 5px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(255,255,255,.36));
+  box-shadow: 0 18px 54px rgba(0,0,0,.34), 0 0 0 1px rgba(255,255,255,.3);
+}
+
+.incoming-caller-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 34%;
+}
+
 .incoming-call-copy small {
   display: block;
   margin-bottom: 8px;
@@ -238,6 +257,11 @@
   .slide-answer-wrap {
     bottom: max(34px, calc(env(safe-area-inset-bottom) + 24px));
   }
+
+  .incoming-caller-photo-wrap {
+    width: clamp(112px, 29vw, 170px);
+    margin-bottom: 14px;
+  }
 }
 
 @media (min-width: 900px) and (min-height: 1200px) and (orientation: portrait) {
@@ -253,6 +277,12 @@
 
   .incoming-call-copy {
     top: 130px;
+  }
+
+  .incoming-caller-photo-wrap {
+    width: clamp(300px, 26vw, 460px);
+    margin-bottom: 34px;
+    padding: 8px;
   }
 
   .incoming-call-copy small {
