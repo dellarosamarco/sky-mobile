@@ -36,9 +36,12 @@ test('Sky part 2 assets and home feedback are wired to the supplied materials', 
 })
 
 test('Sky part 2 game copy, chip artwork and results layout are implemented', async () => {
-  const game = await read('src/components/GameExperienceImpl.jsx')
+  const [game, css] = await Promise.all([
+    read('src/components/GameExperienceImpl.jsx'),
+    read('src/sky-part2.css'),
+  ])
 
-  assert.match(game, /Prendi i chip e occhio ai bonus!/)
+  assert.match(game, /<h1>prendi i chip<br \/>e occhio ai bonus<\/h1>/)
   assert.match(game, /\/sky-assets\/chip\.png/)
   assert.doesNotMatch(game, /CATCH 'EM ALL|Tocca direttamente le SIM|Preparati|Tocca le SIM per prenderle|game-copy-strip|tap-game-hint/)
   assert.match(game, /<small>PUNTEGGIO<\/small>/)
@@ -46,6 +49,8 @@ test('Sky part 2 game copy, chip artwork and results layout are implemented', as
   assert.match(game, /result-box[\s\S]*Punteggio[\s\S]*\{simCount\}/)
   assert.match(game, /result-box[\s\S]*Giga[\s\S]*Con Sky Mobile puoi avere anche giga illimitati/)
   assert.match(game, /event\.currentTarget\.style\.pointerEvents = 'none'/)
+  assert.match(css, /\.result-box > span\s*\{[\s\S]*?font-size:\s*22px[\s\S]*?font-weight:\s*700/)
+  assert.match(css, /@media \(min-width: 900px\)[\s\S]*?\.result-box > span\s*\{[\s\S]*?font-size:\s*clamp\(35px, calc\(2vw \+ 7px\), 49px\)[\s\S]*?font-weight:\s*700/)
 })
 
 test('collecting a chip avoids synchronous layout reads that can cause a frame hitch', async () => {
