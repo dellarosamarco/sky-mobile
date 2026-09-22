@@ -7,6 +7,7 @@ const TALENTS = [
     id: 'talent-a',
     name: 'Alessandro Del Piero',
     avatar: 'ADP',
+    avatarImage: '/media/talent-a/avatar.jpg',
     intro: '/media/talent-a/intro.mp4',
     correct: '/media/talent-a/correct.mp4',
     wrong: '/media/talent-a/wrong.mp4',
@@ -245,6 +246,11 @@ export default function VideoCallExperience({ onReset }) {
         </div>
         <div className="incoming-call-shade" aria-hidden="true" />
         <div className="incoming-call-copy">
+          {talent.avatarImage && (
+            <div className="incoming-caller-photo-wrap" aria-hidden="true">
+              <img className="incoming-caller-photo" src={talent.avatarImage} alt="" draggable="false" />
+            </div>
+          )}
           <small>VIDEOCHIAMATA IN ARRIVO</small>
           <h1>{talent.name}</h1>
           <p>Sky Mobile</p>
