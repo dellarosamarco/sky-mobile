@@ -8,7 +8,7 @@ export default function GamePage() {
   const reset = useCallback(() => setPhase('locked'), [])
 
   if (phase === 'locked') {
-    return <IPhoneLockScreen pin="1234" onUnlock={() => setPhase('home')} />
+    return <IPhoneLockScreen pin="7,90" onUnlock={() => setPhase('home')} />
   }
 
   if (phase === 'home') {
