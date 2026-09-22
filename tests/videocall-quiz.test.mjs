@@ -27,6 +27,7 @@ test('videocall uses the seven final Sky Mobile quiz questions at random', async
   assert.match(video, /label: 'Giga illimitati e 6 mesi gratis', correct: true/)
   assert.match(video, /label: '7,90', correct: true/)
   assert.match(video, /label: 'Sì, giga illimitati', correct: true/)
-  assert.match(video, /label: 'No, ma sarà possibile in futuro', correct: true/)
+  assert.match(video, /label: 'Sì, in ogni momento e da qualsiasi canale', correct: true/)
+  assert.match(video, /label: 'No, ma sarà possibile in futuro', correct: false/)
   assert.match(video, /label: 'C’è sia la SIM fisica che la e-SIM\.', correct: true/)
 })
