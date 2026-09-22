@@ -23,19 +23,61 @@ const TALENTS = [
 
 const QUESTIONS = [
   {
-    id: 'placeholder-1',
-    text: 'Domanda Sky Mobile — copy definitiva da inserire',
+    id: 'sky-mobile-1',
+    text: 'La nuova offerta Sky Mobile è solo per chi è già cliente o anche per i nuovi?',
     answers: [
-      { id: 'a', label: 'Risposta A', correct: true },
-      { id: 'b', label: 'Risposta B', correct: false },
+      { id: 'a', label: 'Solo i già clienti', correct: false },
+      { id: 'b', label: 'Tutti', correct: true },
+      { id: 'c', label: 'Solo i nuovi', correct: false },
     ],
   },
   {
-    id: 'placeholder-2',
-    text: 'Seconda domanda — copy definitiva da inserire',
+    id: 'sky-mobile-2',
+    text: 'Fino a quanti mesi gratis può avere chi è già abbonato Sky?',
     answers: [
-      { id: 'a', label: 'Risposta A', correct: false },
-      { id: 'b', label: 'Risposta B', correct: true },
+      { id: 'a', label: 'Sei mesi', correct: true },
+      { id: 'b', label: 'Quattro mesi', correct: false },
+    ],
+  },
+  {
+    id: 'sky-mobile-3',
+    text: 'Quali vantaggi ha chi è cliente Sky da più di sei anni?',
+    answers: [
+      { id: 'a', label: 'Giga illimitati e 6 mesi gratis', correct: true },
+      { id: 'b', label: '250 Giga e 2 mesi gratis', correct: false },
+    ],
+  },
+  {
+    id: 'sky-mobile-4',
+    text: 'Qual è il prezzo di partenza della nuova offerta Sky Mobile?',
+    answers: [
+      { id: 'a', label: '7,90', correct: true },
+      { id: 'b', label: '9,90', correct: false },
+    ],
+  },
+  {
+    id: 'sky-mobile-5',
+    text: 'I nuovi clienti che scelgono Sky Mobile in abbinamento a TV o Wifi, hanno vantaggi sulla componente Mobile?',
+    answers: [
+      { id: 'a', label: 'No', correct: false },
+      { id: 'b', label: 'Sì, giga illimitati', correct: true },
+      { id: 'c', label: 'Mesi in regalo', correct: false },
+    ],
+  },
+  {
+    id: 'sky-mobile-6',
+    text: 'Chi ha Sky Mobile Powered by Fastweb può passare alla nuova offerta Sky Mobile?',
+    answers: [
+      { id: 'a', label: 'Sì, in ogni momento e da qualsiasi canale', correct: false },
+      { id: 'b', label: 'No, ma sarà possibile in futuro', correct: true },
+    ],
+  },
+  {
+    id: 'sky-mobile-7',
+    text: 'Con Sky Mobile ci vuole per forza la SIM card o c’è anche la e-SIM?',
+    answers: [
+      { id: 'a', label: 'C’è solo la e-sim', correct: false },
+      { id: 'b', label: 'C’è sia la SIM fisica che la e-SIM.', correct: true },
     ],
   },
 ]
