@@ -7,9 +7,9 @@ const TALENTS = [
     id: 'talent-a',
     name: 'Alessandro Del Piero',
     avatar: 'ADP',
-    intro: 'https://sky-game-bay.vercel.app/media/talent-a/intro.mp4',
-    correct: 'https://sky-game-bay.vercel.app/media/talent-a/correct.mp4',
-    wrong: 'https://sky-game-bay.vercel.app/media/talent-a/wrong.mp4',
+    intro: '/media/talent-a/intro.mp4',
+    correct: '/media/talent-a/correct.mp4',
+    wrong: '/media/talent-a/wrong.mp4',
   },
   {
     id: 'talent-b',
@@ -406,14 +406,20 @@ export default function VideoCallExperience({ onReset }) {
         <div className="question-overlay">
           <section className="question-card">
             <h2>{question.text}</h2>
-            <div className="answer-grid">
-              {question.answers.map((option) => (
-                <button key={option.id} type="button" onClick={() => answer(option.correct)}>{option.label}</button>
+            <div className="question-options">
+              {question.answers.map((choice) => (
+                <button key={choice.id} type="button" onClick={() => answer(choice.correct)}>{choice.label}</button>
               ))}
             </div>
           </section>
         </div>
       )}
+
+      <div className="call-controls" aria-hidden="true">
+        <span>◉</span>
+        <span>🎙</span>
+        <span>▣</span>
+      </div>
 
       <div className="ios-home-indicator" aria-hidden="true" />
     </main>
