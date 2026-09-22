@@ -36,9 +36,12 @@ test('Sky part 2 assets and home feedback are wired to the supplied materials', 
 })
 
 test('Sky part 2 game copy, chip artwork and results layout are implemented', async () => {
-  const game = await read('src/components/GameExperienceImpl.jsx')
+  const [game, css] = await Promise.all([
+    read('src/components/GameExperienceImpl.jsx'),
+    read('src/sky-part2.css'),
+  ])
 
-  assert.match(game, /Prendi i chip e occhio ai bonus!/)
+  assert.match(game, /<h1>prendi i chip<br \/>e occhio ai bonus<\/h1>/)
   assert.match(game, /\/sky-assets\/chip\.png/)
   assert.doesNotMatch(game, /CATCH 'EM ALL|Tocca direttamente le SIM|Preparati|Tocca le SIM per prenderle|game-copy-strip|tap-game-hint/)
   assert.match(game, /<small>PUNTEGGIO<\/small>/)
@@ -46,6 +49,8 @@ test('Sky part 2 game copy, chip artwork and results layout are implemented', as
   assert.match(game, /result-box[\s\S]*Punteggio[\s\S]*\{simCount\}/)
   assert.match(game, /result-box[\s\S]*Giga[\s\S]*Con Sky Mobile puoi avere anche giga illimitati/)
   assert.match(game, /event\.currentTarget\.style\.pointerEvents = 'none'/)
+  assert.match(css, /\.result-box > span\s*\{[\s\S]*?font-size:\s*22px[\s\S]*?font-weight:\s*700/)
+  assert.match(css, /@media \(min-width: 900px\)[\s\S]*?\.result-box > span\s*\{[\s\S]*?font-size:\s*clamp\(35px, calc\(2vw \+ 7px\), 49px\)[\s\S]*?font-weight:\s*700/)
 })
 
 test('collecting a chip avoids synchronous layout reads that can cause a frame hitch', async () => {
@@ -72,7 +77,7 @@ test('intro chip uses glow, float and pulse animation without affecting gameplay
   assert.doesNotMatch(css, /\.collectible--sim[^}]*animation:\s*intro-chip-/s)
 })
 
-test('Sky part 2 video call feedback is implemented without replacing pending talent content', async () => {
+test('Sky part 2 video call feedback keeps pending talent content and uses final quiz copy', async () => {
   const video = await read('src/components/VideoCallExperience.jsx')
 
   assert.doesNotMatch(video, /<p>Scorri per rispondere<\/p>/)
@@ -82,5 +87,6 @@ test('Sky part 2 video call feedback is implemented without replacing pending ta
   assert.match(video, /aspectRatio: \{ ideal: 9 \/ 16 \}/)
   assert.match(video, /orientation\?\.lock\?\.\('portrait-primary'\)/)
   assert.match(video, /Talent 2/)
-  assert.match(video, /copy definitiva da inserire/)
+  assert.doesNotMatch(video, /copy definitiva da inserire/)
+  assert.match(video, /La nuova offerta Sky Mobile è solo per chi è già cliente o anche per i nuovi\?/)
 })
