@@ -46,6 +46,10 @@
   font-weight: 500;
 }
 
+.game-intro h1::first-letter {
+  text-transform: uppercase;
+}
+
 .intro-chip-card {
   position: relative;
   isolation: isolate;
