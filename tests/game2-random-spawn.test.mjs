@@ -14,7 +14,7 @@ test('/game2 keeps the game flow but uses random static collectibles with a two 
   assert.match(app, /import Game2Page from '\.\/pages\/Game2Page'/)
   assert.match(app, /<Route path="\/game2" element=\{<Game2Page \/>\} \/>/)
 
-  assert.match(page, /<IPhoneLockScreen pin="1234"/)
+  assert.match(page, /<IPhoneLockScreen pin="7,90"/)
   assert.match(page, /<PhoneHome mode="game"/)
   assert.match(page, /<GameExperience2 onReset=\{reset\} \/>/)
 
