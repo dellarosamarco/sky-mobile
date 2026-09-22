@@ -181,8 +181,8 @@
 }
 
 .result-box > span {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 700;
   opacity: .76;
 }
 
@@ -252,7 +252,8 @@
   }
 
   .result-box > span {
-    font-size: clamp(28px, 2vw, 42px);
+    font-size: clamp(35px, calc(2vw + 7px), 49px);
+    font-weight: 700;
   }
 
   .result-box-score > strong {
