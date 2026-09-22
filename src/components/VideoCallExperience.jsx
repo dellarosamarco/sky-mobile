@@ -405,7 +405,6 @@ export default function VideoCallExperience({ onReset }) {
       {phase === 'question' && (
         <div className="question-overlay">
           <section className="question-card">
-            <span className="question-kicker">{talent.name} ti chiede:</span>
             <h2>{question.text}</h2>
             <div className="answer-grid">
               {question.answers.map((option) => (
