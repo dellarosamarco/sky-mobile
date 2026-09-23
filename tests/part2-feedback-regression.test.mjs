@@ -77,7 +77,7 @@ test('intro chip uses glow, float and pulse animation without affecting gameplay
   assert.doesNotMatch(css, /\.collectible--sim[^}]*animation:\s*intro-chip-/s)
 })
 
-test('Sky part 2 video call feedback keeps pending talent content and uses final quiz copy', async () => {
+test('Sky part 2 video call feedback keeps final talent content and uses final quiz copy', async () => {
   const video = await read('src/components/VideoCallExperience.jsx')
 
   assert.doesNotMatch(video, /<p>Scorri per rispondere<\/p>/)
@@ -86,7 +86,7 @@ test('Sky part 2 video call feedback keeps pending talent content and uses final
   assert.match(video, /ended-icon[\s\S]*\/sky-assets\/chip\.png/)
   assert.match(video, /aspectRatio: \{ ideal: 9 \/ 16 \}/)
   assert.match(video, /orientation\?\.lock\?\.\('portrait-primary'\)/)
-  assert.match(video, /Talent 2/)
+  assert.match(video, /Luca Argentero/)
   assert.doesNotMatch(video, /copy definitiva da inserire/)
   assert.match(video, /La nuova offerta Sky Mobile è solo per chi è già cliente o anche per i nuovi\?/)
 })
