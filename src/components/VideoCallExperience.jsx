@@ -14,8 +14,9 @@ const TALENTS = [
   },
   {
     id: 'talent-b',
-    name: 'Talent 2',
-    avatar: 'T2',
+    name: 'Luca Argentero',
+    avatar: 'LA',
+    avatarImage: '/media/talent-b/avatar_2.jpg',
     intro: '/media/talent-b/intro.mp4',
     correct: '/media/talent-b/correct.mp4',
     wrong: '/media/talent-b/wrong.mp4',
